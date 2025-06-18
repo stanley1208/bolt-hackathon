@@ -24,7 +24,8 @@ export class AgentOrchestrator {
       query,
       socketId,
       status: 'active',
-      startTime: Date.now()
+      startTime: Date.now(),
+      researchData: null // Store research data for final verdict
     });
 
     console.log(`🔬 Starting research session: ${sessionId}`);
@@ -44,7 +45,7 @@ export class AgentOrchestrator {
       this.broadcastUpdate(session.socketId, {
         type: 'workflow_started',
         sessionId,
-        message: 'Initializing multi-agent analysis...'
+        message: 'Initializing deep research analysis with Perplexity AI...'
       });
 
       const [researchResults, evaluationFramework] = await Promise.all([
@@ -52,7 +53,10 @@ export class AgentOrchestrator {
         this.personaCrafter.createFramework(sessionId, query)
       ]);
 
-      // Phase 2: Judge evaluation
+      // Store research data in session for final verdict
+      session.researchData = researchResults;
+
+      // Phase 2: Judge evaluation with research data
       const finalVerdict = await this.judge.evaluate(
         sessionId, 
         query, 
@@ -60,13 +64,17 @@ export class AgentOrchestrator {
         evaluationFramework
       );
 
+      // Embed research data in final verdict
+      finalVerdict.researchData = researchResults;
+      finalVerdict.sessionId = sessionId;
+
       // Complete session
       await this.db.completeSession(sessionId);
       this.broadcastUpdate(session.socketId, {
         type: 'workflow_completed',
         sessionId,
         finalVerdict,
-        message: 'Research analysis completed successfully!'
+        message: 'Deep research analysis completed successfully!'
       });
 
       this.activeSessions.delete(sessionId);
@@ -79,17 +87,28 @@ export class AgentOrchestrator {
         this.broadcastUpdate(session.socketId, {
           type: 'workflow_error',
           sessionId,
-          error: error.message
+          error: error.message,
+          message: 'Research workflow encountered an error. Please try again.'
         });
       }
+      
+      // Clean up session
+      this.activeSessions.delete(sessionId);
     }
   }
 
   broadcastUpdate(socketId, data) {
     this.io.to(socketId).emit('agent_update', data);
+    console.log(`📡 Broadcasting update to ${socketId}:`, {
+      type: data.type,
+      agent: data.agent,
+      activity: data.activity,
+      message: data.message?.substring(0, 100) + '...'
+    });
   }
 
   async logActivity(sessionId, agentName, activityType, message, metadata = null) {
+    try {
     await this.db.logActivity(sessionId, agentName, activityType, message, metadata);
     
     const session = this.activeSessions.get(sessionId);
@@ -103,10 +122,34 @@ export class AgentOrchestrator {
         metadata,
         timestamp: Date.now()
       });
+      }
+    } catch (error) {
+      console.error(`Failed to log activity for session ${sessionId}:`, error);
     }
   }
 
   async saveResult(sessionId, agentName, resultType, content, score = null, confidence = null) {
+    try {
     await this.db.saveResult(sessionId, agentName, resultType, content, score, confidence);
+    } catch (error) {
+      console.error(`Failed to save result for session ${sessionId}:`, error);
+    }
+  }
+
+  // Graceful shutdown
+  async shutdown() {
+    console.log('🔄 Shutting down orchestrator...');
+    
+    // Notify all active sessions
+    for (const [sessionId, session] of this.activeSessions) {
+      this.broadcastUpdate(session.socketId, {
+        type: 'server_shutdown',
+        sessionId,
+        message: 'Server is shutting down. Please refresh and try again.'
+      });
+    }
+    
+    this.activeSessions.clear();
+    console.log('✅ Orchestrator shutdown complete');
   }
 }
