@@ -69,12 +69,38 @@ export class PersonaCrafterAgent {
 
   categorizeQuery(query) {
     const categories = [
-      { name: 'Technical Analysis', keywords: ['technology', 'software', 'algorithm', 'data'] },
-      { name: 'Scientific Research', keywords: ['research', 'study', 'experiment', 'hypothesis'] },
-      { name: 'Business Strategy', keywords: ['business', 'market', 'strategy', 'revenue'] },
-      { name: 'Health & Medicine', keywords: ['health', 'medical', 'treatment', 'clinical'] },
-      { name: 'Environmental Study', keywords: ['environment', 'climate', 'sustainability', 'green'] },
-      { name: 'General Analysis', keywords: [] }
+      { 
+        name: 'Civil Code', 
+        keywords: ['contract formation', 'offer acceptance', 'consideration', 'breach of contract', 'contract remedies', 'specific performance', 'damages', 'contract interpretation', 'parol evidence', 'statute of frauds', 'civ'] 
+      },
+      { 
+        name: 'Commercial Code', 
+        keywords: ['sale of goods', 'ucc', 'uniform commercial code', 'merchant', 'commercial reasonableness', 'goods', 'warehouse receipt', 'bill of lading', 'secured transactions', 'com'] 
+      },
+      { 
+        name: 'Business and Professions Code', 
+        keywords: ['contractor contract', 'home improvement contract', 'section 7159', 'professional services', 'licensed contractor', 'construction contract', 'bpc', 'contractor licensing'] 
+      },
+      { 
+        name: 'Code of Civil Procedure', 
+        keywords: ['contract lawsuit', 'contract litigation', 'contract dispute', 'contract enforcement', 'contract trial', 'contract appeal', 'ccp', 'civil procedure'] 
+      },
+      { 
+        name: 'Evidence Code', 
+        keywords: ['contract evidence', 'parol evidence rule', 'contract testimony', 'contract proof', 'contract admissibility', 'evid', 'evidence'] 
+      },
+      { 
+        name: 'Labor Code', 
+        keywords: ['employment contract', 'labor contract', 'wage contract', 'non-compete', 'section 925', 'employment agreement', 'lab', 'labor'] 
+      },
+      { 
+        name: 'Public Contract Code', 
+        keywords: ['government contract', 'public contract', 'bidding contract', 'public works', 'government procurement', 'pcc', 'public contracting'] 
+      },
+      { 
+        name: 'General Contract Law', 
+        keywords: ['contract', 'agreement', 'terms', 'conditions', 'obligations', 'performance', 'breach', 'enforcement'] 
+      }
     ];
 
     const queryLower = query.toLowerCase();
@@ -84,28 +110,51 @@ export class PersonaCrafterAgent {
       }
     }
     
-    return 'General Analysis';
+    return 'General Contract Law';
   }
 
   generateCriteria(queryType) {
     const baseCriteria = [
-      { name: 'Accuracy', weight: 0.3, description: 'Factual correctness and reliability' },
-      { name: 'Relevance', weight: 0.25, description: 'Direct relation to query topic' },
-      { name: 'Completeness', weight: 0.2, description: 'Comprehensive coverage of topic' },
-      { name: 'Source Quality', weight: 0.15, description: 'Credibility of information sources' },
-      { name: 'Methodology', weight: 0.1, description: 'Research approach and rigor' }
+      { name: 'Contract Formation Analysis', weight: 0.25, description: 'Proper analysis of offer, acceptance, consideration, and capacity under California law' },
+      { name: 'Contract Interpretation', weight: 0.20, description: 'Correct application of California contract interpretation principles and parol evidence rules' },
+      { name: 'Statutory Compliance', weight: 0.20, description: 'Adherence to relevant California statutes (Civil Code, Commercial Code, etc.)' },
+      { name: 'Case Law Integration', weight: 0.15, description: 'Proper citation and application of California contract law precedent' },
+      { name: 'Practical Application', weight: 0.20, description: 'Actionable legal guidance for contract drafting, performance, and enforcement' }
     ];
 
-    // Add specialized criteria based on query type
+    // Add specialized criteria based on California code type
     const specializedCriteria = {
-      'Technical Analysis': [
-        { name: 'Technical Depth', weight: 0.1, description: 'Level of technical detail and expertise' }
+      'Civil Code': [
+        { name: 'Contract Formation Elements', weight: 0.1, description: 'Analysis of offer, acceptance, consideration, capacity, and mutual assent' },
+        { name: 'Breach and Remedies', weight: 0.1, description: 'Understanding of material breach, anticipatory breach, and available remedies' }
       ],
-      'Scientific Research': [
-        { name: 'Statistical Rigor', weight: 0.1, description: 'Quality of statistical analysis' }
+      'Commercial Code': [
+        { name: 'UCC Article 2 Analysis', weight: 0.1, description: 'Proper application of sale of goods provisions and merchant standards' },
+        { name: 'Commercial Reasonableness', weight: 0.1, description: 'Understanding of commercial standards and industry practices' }
       ],
-      'Business Strategy': [
-        { name: 'Practical Applicability', weight: 0.1, description: 'Real-world implementation feasibility' }
+      'Business and Professions Code': [
+        { name: 'Professional Contract Requirements', weight: 0.1, description: 'Understanding of licensed professional contract obligations and disclosures' },
+        { name: 'Contractor Law Compliance', weight: 0.1, description: 'Knowledge of construction contract requirements under Section 7159' }
+      ],
+      'Code of Civil Procedure': [
+        { name: 'Contract Litigation Analysis', weight: 0.1, description: 'Understanding of contract dispute procedures and remedies' },
+        { name: 'Enforcement Procedures', weight: 0.1, description: 'Knowledge of contract enforcement mechanisms and judicial remedies' }
+      ],
+      'Evidence Code': [
+        { name: 'Contract Evidence Standards', weight: 0.1, description: 'Knowledge of evidence rules for proving contract terms and performance' },
+        { name: 'Parol Evidence Application', weight: 0.1, description: 'Proper application of parol evidence rule in contract interpretation' }
+      ],
+      'Labor Code': [
+        { name: 'Employment Contract Analysis', weight: 0.1, description: 'Understanding of California employment contract restrictions and requirements' },
+        { name: 'Non-Compete Enforcement', weight: 0.1, description: 'Knowledge of Section 925 restrictions on non-compete agreements' }
+      ],
+      'Public Contract Code': [
+        { name: 'Government Contract Procedures', weight: 0.1, description: 'Understanding of public agency contracting and bidding requirements' },
+        { name: 'Public Bidding Compliance', weight: 0.1, description: 'Knowledge of competitive bidding and procurement procedures' }
+      ],
+      'General Contract Law': [
+        { name: 'Multi-Code Integration', weight: 0.1, description: 'Effective integration of multiple California codes in contract analysis' },
+        { name: 'Comprehensive Contract Analysis', weight: 0.1, description: 'Holistic approach to contract law across all relevant California codes' }
       ]
     };
 
@@ -122,33 +171,57 @@ export class PersonaCrafterAgent {
 
   createJudgePersona(queryType) {
     const personas = {
-      'Technical Analysis': {
-        title: 'Senior Technical Analyst',
-        expertise: ['Software Engineering', 'Data Analysis', 'System Architecture'],
-        experience: '15+ years in technology sector',
-        approach: 'Methodical and detail-oriented with focus on technical accuracy'
+      'Civil Code': {
+        title: 'California Contract Law Judge',
+        expertise: ['California Contract Formation', 'Contract Interpretation', 'Breach of Contract', 'Contract Remedies', 'Civil Code Analysis'],
+        experience: '18+ years in California contract law as Superior Court judge and private practice attorney',
+        approach: 'Methodical analysis of contract formation elements with emphasis on California Civil Code statutory interpretation and established precedent'
       },
-      'Scientific Research': {
-        title: 'Research Scientist',
-        expertise: ['Research Methodology', 'Statistical Analysis', 'Peer Review'],
-        experience: '12+ years in academic and industry research',
-        approach: 'Evidence-based evaluation with emphasis on methodological rigor'
+      'Commercial Code': {
+        title: 'California Commercial Law Judge',
+        expertise: ['Uniform Commercial Code', 'Sale of Goods Contracts', 'Commercial Transactions', 'Merchant Standards', 'California Commercial Code'],
+        experience: '15+ years in commercial litigation and business court assignments',
+        approach: 'Practical focus on commercial reasonableness standards and UCC integration with California contract principles'
       },
-      'Business Strategy': {
-        title: 'Strategy Consultant',
-        expertise: ['Business Analysis', 'Market Research', 'Strategic Planning'],
-        experience: '10+ years in management consulting',
-        approach: 'Practical focus on actionable insights and business impact'
+      'Business and Professions Code': {
+        title: 'California Professional Contracts Judge',
+        expertise: ['Licensed Professional Contracts', 'Contractor Law', 'Professional Licensing', 'Construction Contracts', 'Business & Professions Code Section 7159'],
+        experience: '20+ years handling professional licensing disputes and construction contract litigation',
+        approach: 'Strict adherence to statutory disclosure requirements with focus on consumer protection in professional service contracts'
       },
-      'General Analysis': {
-        title: 'Senior Research Analyst',
-        expertise: ['Critical Analysis', 'Information Synthesis', 'Quality Assessment'],
-        experience: '8+ years in research and analysis',
-        approach: 'Balanced evaluation with emphasis on clarity and comprehensiveness'
+      'Code of Civil Procedure': {
+        title: 'California Contract Litigation Judge',
+        expertise: ['Contract Dispute Resolution', 'Civil Procedure', 'Evidence in Contract Cases', 'Remedies and Enforcement', 'California Precedent Analysis'],
+        experience: '16+ years presiding over contract litigation and commercial disputes',
+        approach: 'Emphasis on procedural fairness and practical resolution of contract disputes with attention to California precedent'
+      },
+      'Evidence Code': {
+        title: 'California Contract Evidence Specialist Judge',
+        expertise: ['Contract Evidence Standards', 'Parol Evidence Rule', 'Contract Interpretation Evidence', 'California Evidence Code', 'Proof of Contract Terms'],
+        experience: '14+ years specializing in complex contract evidence issues and interpretation disputes',
+        approach: 'Careful application of evidence rules to contract interpretation with focus on admissibility of extrinsic evidence'
+      },
+      'Labor Code': {
+        title: 'California Employment Contract Judge',
+        expertise: ['Employment Contracts', 'California Labor Code', 'Wage and Hour Contracts', 'Non-Compete Agreements', 'Employment Law'],
+        experience: '12+ years handling employment contract disputes and labor law violations',
+        approach: 'Strong emphasis on California worker protection statutes and employment contract restrictions under Labor Code Section 925'
+      },
+      'Public Contract Code': {
+        title: 'California Public Contract Judge',
+        expertise: ['Government Contracting', 'Public Bidding Procedures', 'Public Contract Code', 'Administrative Law', 'Government Procurement'],
+        experience: '17+ years in public law and government contract disputes',
+        approach: 'Strict adherence to public contracting procedures with emphasis on transparency and competitive bidding requirements'
+      },
+      'General Contract Law': {
+        title: 'Senior California Contract Law Judge',
+        expertise: ['California Contract Law', 'Multi-Code Contract Analysis', 'Complex Commercial Disputes', 'Contract Interpretation', 'Legal Research and Analysis'],
+        experience: '22+ years in comprehensive contract law practice and judicial service',
+        approach: 'Comprehensive analysis integrating multiple California codes with emphasis on practical contract enforcement and equitable remedies'
       }
     };
 
-    return personas[queryType] || personas['General Analysis'];
+    return personas[queryType] || personas['General Contract Law'];
   }
 
   async simulateDelay(ms) {
