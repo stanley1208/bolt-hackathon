@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { QueryForm } from './QueryForm';
 import { AgentDashboard } from './AgentDashboard';
@@ -16,6 +16,12 @@ interface AgentUpdate {
   timestamp?: number;
   finalVerdict?: any;
   error?: string;
+  framework?: {
+    queryType: string;
+    relevantCategories: string[];
+    confidence: number;
+    judgePersona: string;
+  };
 }
 
 interface Agent {
@@ -107,11 +113,30 @@ export const ResearchPlatform: React.FC = () => {
         ...agent,
         status: ['A1-Researcher', 'A2-Persona-Crafter'].includes(agent.name) ? 'active' : 'idle',
         currentActivity: ['A1-Researcher', 'A2-Persona-Crafter'].includes(agent.name) 
-          ? 'Starting analysis...' 
+          ? 'Starting enhanced analysis...' 
           : 'Waiting for analysis...',
         progress: 0,
         activities: []
       })));
+    }
+
+    if (update.type === 'framework_created' && update.framework) {
+      setAgents(prev => prev.map(agent => {
+        if (agent.name === 'A2-Persona-Crafter') {
+          return {
+            ...agent,
+            status: 'active',
+            currentActivity: `Framework created: ${update.framework.queryType} (${Math.round(update.framework.confidence * 100)}% confidence)`,
+            progress: 50,
+            activities: [...agent.activities, {
+              message: `Created evaluation framework for ${update.framework.queryType} domain with ${update.framework.judgePersona}`,
+              timestamp: update.timestamp || Date.now(),
+              type: 'framework_creation'
+            }]
+          };
+        }
+        return agent;
+      }));
     }
 
     if (update.type === 'agent_activity' && update.agent) {
@@ -169,13 +194,30 @@ export const ResearchPlatform: React.FC = () => {
       setAgents(prev => prev.map(agent => ({
         ...agent,
         status: 'completed',
-        progress: 100
+        progress: 100,
+        currentActivity: agent.name === 'A3-Judge' 
+          ? 'Evaluation completed successfully!' 
+          : agent.currentActivity
       })));
     }
 
     if (update.type === 'workflow_error') {
       setIsProcessing(false);
       console.error('Workflow error:', update.error);
+    }
+
+    if (update.activity === 'evaluation_started') {
+      setAgents(prev => prev.map(agent => 
+        agent.name === 'Judge' 
+          ? { ...agent, status: 'active', currentActivity: 'Starting evaluation...', progress: 5 }
+          : agent
+      ));
+    } else if (update.activity === 'evaluation_complete') {
+      setAgents(prev => prev.map(agent => 
+        agent.name === 'Judge' 
+          ? { ...agent, status: 'completed', currentActivity: 'Evaluation completed successfully!', progress: 100 }
+          : agent
+      ));
     }
   };
 
@@ -226,7 +268,7 @@ export const ResearchPlatform: React.FC = () => {
               : 'bg-red-100 text-red-800 border border-red-200'
           }`}>
             <div className={`w-2 h-2 rounded-full ${connected ? 'bg-green-500' : 'bg-red-500'}`} />
-            <span>{connected ? 'Connected to MARP Server' : 'Disconnected from Server'}</span>
+            <span>{connected ? 'Connected to Materials Science Research Server' : 'Disconnected from Server'}</span>
           </div>
         </div>
 
@@ -244,7 +286,7 @@ export const ResearchPlatform: React.FC = () => {
             <div className="flex items-start space-x-3">
               <Search className="w-5 h-5 text-blue-600 mt-1 flex-shrink-0" />
               <div className="flex-1">
-                <h3 className="text-lg font-semibold text-slate-900 mb-2">Research Query</h3>
+                <h3 className="text-lg font-semibold text-slate-900 mb-2">Materials Science Research Query</h3>
                 <p className="text-slate-700 leading-relaxed">{query}</p>
                 {sessionId && (
                   <p className="text-sm text-slate-500 mt-2">Session ID: {sessionId}</p>

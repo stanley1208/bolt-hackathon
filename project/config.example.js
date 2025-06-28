@@ -1,5 +1,5 @@
 export const config = {
-  // Perplexity Deep Research API Configuration
+  // Perplexity Deep Research API Configuration (Required for Researcher Agent)
   perplexity: {
     apiKey: process.env.PERPLEXITY_API_KEY || 'your_perplexity_api_key_here',
     baseUrl: 'https://api.perplexity.ai',
@@ -8,12 +8,6 @@ export const config = {
     // deepResearchModel: 'llama-3.1-sonar-small-128k-online', // Budget: Faster & cheaper
     // deepResearchModel: 'sonar-pro', // Premium: Highest quality (if available)
     timeout: 300000, // 5 minutes for deep research
-  },
-
-  // AI API Configuration (for Judge Agent)
-  openai: {
-    apiKey: process.env.OPENAI_API_KEY || 'your_openai_api_key_here',
-    model: 'gpt-4o-mini', // Cost-effective model for evaluation
   },
   
   // Search API Configuration

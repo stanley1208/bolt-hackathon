@@ -1,4 +1,3 @@
-import React from 'react';
 import { Brain, Activity } from 'lucide-react';
 
 interface HeaderProps {
@@ -15,17 +14,22 @@ export const Header: React.FC<HeaderProps> = ({ connected }) => {
               <Brain className="w-7 h-7 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-slate-900">MARP</h1>
-              <p className="text-sm text-slate-600">Multi-Agent Research Platform</p>
+              <div className="text-center">
+                <h1 className="text-3xl font-bold text-slate-900 mb-2">MARP</h1>
+                <p className="text-sm text-slate-600">Materials Science Research Platform</p>
+                <p className="text-xs text-slate-500">Advanced multi-agent research system</p>
+              </div>
             </div>
           </div>
           
           <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2 text-sm">
-              <Activity className={`w-4 h-4 ${connected ? 'text-green-500' : 'text-red-500'}`} />
-              <span className="text-slate-600">
+            <div className="text-right">
+              <div className="text-sm font-medium text-slate-900">
                 {connected ? 'System Active' : 'System Offline'}
-              </span>
+              </div>
+              <div className="text-xs text-slate-500">
+                {connected ? 'Connected' : 'Disconnected'}
+              </div>
             </div>
           </div>
         </div>

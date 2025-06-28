@@ -51,9 +51,9 @@ export class DatabaseManager {
         )
       `);
 
-      console.log('✅ Database initialized successfully');
+      console.log('Database initialized successfully');
     } catch (error) {
-      console.error('❌ Database initialization failed:', error);
+      console.error('Database initialization failed:', error);
       throw error;
     }
   }

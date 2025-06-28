@@ -20,27 +20,27 @@ export class ResearcherAgent {
       sessionId, 
       this.name, 
       'initialization', 
-      'Starting deep research analysis using Perplexity AI...'
+      'Starting deep research analysis using Perplexity AI with enhanced materials science framework...'
     );
 
     try {
-      // Phase 1: Initial deep research
+      // Phase 1: Initial deep research with enhanced context
       await this.orchestrator.logActivity(
         sessionId,
         this.name,
         'research_phase',
-        'Performing comprehensive web research and analysis...',
+        'Performing comprehensive web research with multi-domain materials science analysis...',
         { phase: 1, total: 4 }
       );
 
       const deepResearch = await this.performDeepResearch(sessionId, query);
 
-      // Phase 2: Follow-up research for depth
+      // Phase 2: Follow-up research for depth and cross-domain integration
       await this.orchestrator.logActivity(
         sessionId,
         this.name,
         'research_phase',
-        'Conducting follow-up research on key findings...',
+        'Conducting follow-up research on key findings and cross-domain relationships...',
         { phase: 2, total: 4 }
       );
 
@@ -51,18 +51,18 @@ export class ResearcherAgent {
         sessionId,
         this.name,
         'research_phase',
-        'Verifying sources and assessing credibility...',
+        'Verifying sources and assessing credibility across multiple materials science domains...',
         { phase: 3, total: 4 }
       );
 
       const verifiedFindings = await this.verifyAndAssessSources(sessionId, deepResearch, followUpResearch);
 
-      // Phase 4: Final synthesis
+      // Phase 4: Final synthesis with enhanced framework integration
       await this.orchestrator.logActivity(
         sessionId,
         this.name,
         'research_phase',
-        'Synthesizing findings and generating comprehensive report...',
+        'Synthesizing findings with comprehensive tetrahedron framework and cross-domain analysis...',
         { phase: 4, total: 4 }
       );
 
@@ -72,7 +72,7 @@ export class ResearcherAgent {
       sessionId,
       this.name,
       'completion',
-        `Deep research completed. Analyzed ${finalResearch.sources.length} sources with ${finalResearch.confidenceScore}% confidence.`
+        `Deep research completed. Analyzed ${finalResearch.sources.length} sources with ${finalResearch.confidenceScore}% confidence across multiple materials science domains.`
     );
 
     await this.orchestrator.saveResult(
@@ -100,18 +100,56 @@ export class ResearcherAgent {
 
   async performDeepResearch(sessionId, query) {
     try {
-      console.log(`🔬 [DEBUG] Starting Perplexity API call for: "${query}"`);
+      console.log(`[DEBUG] Starting Perplexity API call for: "${query}"`);
       
       const response = await this.perplexityAPI.post('/chat/completions', {
         model: config.perplexity.deepResearchModel,
         messages: [
           {
             role: 'system',
-            content: `You are a professional research analyst. Provide detailed analysis with proper citations and sources.`
+            content: `You are a professional materials science researcher with 20 years of experience. Provide accurate and comprehensive research on materials, properties, applications, and scientific developments based on the user's query. Use only primary and secondary sources when possible.
+
+Understand that materials science is built on the following paradigm of structure-property-processing-performance:
+-- Structure: This portion of the paradigm accounts for the chemical make-up, short- and long-range order, microstructures, defects, atomic/molecular arrangement, crystallography, etc. of the material.
+-- Properties: This portion of the paradigm accounts for the observable / measurable characteristics used to describe a material. Examples include mechanical, electrical, thermal, optical, magnetic characteristics
+-- Processing: This portion of the paradigm accounts for the procedures for synthesizing, forming, or assembling materials into a desired structure. Examples include manufacturing methods, synthesis techniques, fabrication processes.
+-- Performance: This portion of the paradigm accounts for how materials behave in real-world applications and environments, particularly the capability of a materials system to meet a given set of application requirements.
+Other components of the paradigm include:
+-- Characterization: This portion of the paradigm accounts for the methods used to measure, describe, quantify, and evaluate material properties and performance. Examples include microscopy, spectroscopy, mechanical testing, etc.
+-- Design: This portion of the paradigm accounts for the process of selecting and optimizing materials and processing parameters to meet specific performance requirements. Examples include material selection, design for manufacturing, and process optimization.
+-- Sustainability: This portion of the paradigm accounts for the holistic view of role and life cycle of materials.
+
+These components are interconnected - changes in one affect the others. For example, considering structure to processing, a materials scientist would consider how can a structure be achieved through processing. 
+Considering processing to performance, a materials engineer would think about how does the achieved structure evolve during use impacting durability, component life, etc.
+Considering performance to properties, a materials scientist or engineer would need to understand how performance translates to specific materials properties.
+Considering properties to structure, a materials scientist or engineer would think about what structure is necessary to achieve the desired combination of properties.
+
+Use this paradigm to guide your analysis and identify important relationships, but focus your research scope appropriately for the specific query.
+
+Respond in the form of a comprehensive materials science research report, using markdown formatting. Here is an example of the structure and style you should use:
+
+# Materials Science Research Report
+
+## Brief Re-Statement of the Query and Research Methodology
+[Insert brief statement of (1) your understanding of the query within the context of the materials science paradigm and (2) your research methodology in view of the same]
+
+## Summary
+[Insert brief summary of key findings]
+
+## Analysis
+[Insert analysis based on deep research, with sources and citations embedded after each sentence or finding]
+
+## Considerations
+[Insert any considerations that are relevant to the query, including recent research, innovations, or technological advances]
+
+## Conclusion
+[Insert conclusion based on the analysis and considerations]
+
+          }`
           },
           {
             role: 'user',
-            content: `Research and analyze: "${query}". Please provide comprehensive analysis with sources and citations.`
+            content: `Research and analyze: "${query}". Please provide a comprehensive materials science research report with detailed analysis, sources, and citations. Format your report in clean, well-structured markdown with appropriate headers, bullet points, and formatting. Use markdown syntax for emphasis, lists, and organization.`
           }
         ],
         temperature: 0.2,
@@ -122,23 +160,23 @@ export class ResearcherAgent {
         return_related_questions: false
       });
 
-      console.log(`🔬 [DEBUG] Perplexity API Response Status:`, response.status);
-      console.log(`🔬 [DEBUG] Response Data Keys:`, Object.keys(response.data));
+      console.log(`[DEBUG] Perplexity API Response Status:`, response.status);
+      console.log(`[DEBUG] Response Data Keys:`, Object.keys(response.data));
       
       const researchContent = response.data.choices[0].message.content;
       let citations = response.data.citations || [];
 
-      console.log(`🔬 [DEBUG] Research Content Preview:`, researchContent.substring(0, 200) + '...');
-      console.log(`🔬 [DEBUG] API Citations Found:`, citations.length);
-      console.log(`🔬 [DEBUG] API Citations:`, citations);
+      console.log(`[DEBUG] Research Content Preview:`, researchContent.substring(0, 200) + '...');
+      console.log(`[DEBUG] API Citations Found:`, citations.length);
+      console.log(`[DEBUG] API Citations:`, citations);
 
       // Check if citations are embedded in the content but not in separate array
       const contentHasCitations = /\[\d+\]/.test(researchContent);
-      console.log(`🔬 [DEBUG] Content has citation numbers:`, contentHasCitations);
+      console.log(`[DEBUG] Content has citation numbers:`, contentHasCitations);
 
       // If no API citations but content has numbered citations, try to extract from response
       if (citations.length === 0 && contentHasCitations) {
-        console.log(`🔬 [DEBUG] Attempting to extract citations from response metadata...`);
+        console.log(`[DEBUG] Attempting to extract citations from response metadata...`);
         
         // Check if citations are in a different part of the response
         if (response.data.web_results) {
@@ -148,7 +186,7 @@ export class ResearcherAgent {
             snippet: result.body || result.snippet || '',
             index: index + 1
           }));
-          console.log(`🔬 [DEBUG] Extracted citations from web_results:`, citations);
+          console.log(`[DEBUG] Extracted citations from web_results:`, citations);
         } else if (response.data.sources) {
           citations = response.data.sources.map((source, index) => ({
             url: source.url,
@@ -156,13 +194,13 @@ export class ResearcherAgent {
             snippet: source.snippet || source.text || '',
             index: index + 1
           }));
-          console.log(`🔬 [DEBUG] Extracted citations from sources:`, citations);
+          console.log(`[DEBUG] Extracted citations from sources:`, citations);
         } else {
-          console.log(`🔬 [DEBUG] Full Response Structure:`, JSON.stringify(response.data, null, 2));
+          console.log(`[DEBUG] Full Response Structure:`, JSON.stringify(response.data, null, 2));
         }
       }
 
-      console.log(`🔬 [DEBUG] Final Citations Count:`, citations.length);
+      console.log(`[DEBUG] Final Citations Count:`, citations.length);
 
       return {
         content: researchContent,
@@ -173,7 +211,7 @@ export class ResearcherAgent {
       };
 
     } catch (error) {
-      console.error('🚨 [DEBUG] Perplexity API Error Details:', {
+      console.error('[DEBUG] Perplexity API Error Details:', {
         status: error.response?.status,
         statusText: error.response?.statusText,
         data: error.response?.data,
@@ -196,7 +234,7 @@ export class ResearcherAgent {
         messages: [
           {
             role: 'system',
-            content: 'You are conducting follow-up research to add depth and nuance to initial findings. Focus on recent developments, expert opinions, and detailed analysis.'
+            content: 'You are conducting follow-up materials science research to add depth and nuance to initial findings. Focus on recent developments, experimental results, technological applications, and detailed analysis. Use the materials science tetrahedron framework (Structure-Properties-Processing-Performance) to guide your analysis and identify important relationships. Format your response in clean, well-structured markdown with appropriate headers, bullet points, and formatting.'
           },
           {
             role: 'user',
@@ -250,8 +288,8 @@ export class ResearcherAgent {
       };
     });
 
-    console.log(`🔬 [DEBUG] Converted ${allCitations.length} citations to ${sources.length} structured sources`);
-    console.log(`🔬 [DEBUG] Sample source:`, sources[0]);
+    console.log(`[DEBUG] Converted ${allCitations.length} citations to ${sources.length} structured sources`);
+    console.log(`[DEBUG] Sample source:`, sources[0]);
 
     return {
       primaryResearch,
@@ -341,30 +379,77 @@ export class ResearcherAgent {
   extractKeyFindings(primaryContent, followUpContent = '') {
     const allContent = primaryContent + ' ' + (followUpContent || '');
     
-    // Simple extraction - in production, you might use more sophisticated NLP
-    const findings = [];
-    const sentences = allContent.split(/[.!?]+/).filter(s => s.length > 50);
+    // More sophisticated extraction with better sentence filtering
+    const sentences = allContent
+      .split(/[.!?]+/)
+      .filter(s => s.trim().length > 50 && s.trim().length < 300)
+      .map(s => s.trim());
     
-    // Take key sentences that seem to contain important findings
+    const findings = [];
     const keywordPatterns = [
-      /research shows|studies indicate|evidence suggests|data reveals/i,
-      /according to|based on|findings show|results indicate/i,
-      /significantly|importantly|notably|primarily/i,
-      /however|despite|although|nevertheless/i
+      /research shows|studies indicate|evidence suggests|data reveals|analysis shows/i,
+      /according to|based on|findings show|results indicate|demonstrates/i,
+      /significantly|importantly|notably|primarily|key|critical/i,
+      /however|despite|although|nevertheless|conversely/i,
+      /materials science|structure|property|processing|performance/i
     ];
 
-    keywordPatterns.forEach(pattern => {
-      const matches = sentences.filter(s => pattern.test(s)).slice(0, 2);
-      findings.push(...matches.map(s => s.trim()));
+    // Prioritize sentences with multiple keywords
+    const scoredSentences = sentences.map(sentence => {
+      const score = keywordPatterns.reduce((sum, pattern) => 
+        sum + (pattern.test(sentence) ? 1 : 0), 0);
+      return { sentence, score };
     });
 
-    return findings.slice(0, 8); // Limit to 8 key findings
+    // Sort by score and take top findings
+    const topFindings = scoredSentences
+      .filter(item => item.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 8)
+      .map(item => item.sentence);
+
+    return topFindings.length > 0 ? topFindings : sentences.slice(0, 4);
   }
 
   extractTopics(query, content) {
-    // Extract topics from query and content
+    // Enhanced topic extraction with comprehensive materials science focus
+    const materialsKeywords = [
+      // Core tetrahedron concepts
+      'materials', 'structure', 'properties', 'processing', 'performance', 'characterization', 'design', 'sustainability',
+      
+      // Material classes
+      'composite', 'polymer', 'semiconductor', 'quantum', '2D materials', '3D materials', 
+      'nano', 'bio', 'mechanical', 'chemical', 'electrical', 'thermal', 'optical', 'magnetic',
+      'ceramic', 'metal', 'alloy', 
+      
+      // New categories from persona-crafter
+      'sustainable', 'green chemistry', 'circular economy', 'life cycle assessment', 'bio-based', 'recyclable',
+      'additive manufacturing', '3D printing', 'powder bed fusion', 'selective laser melting',
+      'computational', 'simulation', 'modeling', 'DFT', 'molecular dynamics', 'machine learning', 'materials informatics',
+      
+      // Emerging fields
+      'autonomous', 'digital twin', 'high-throughput', 'predictive modeling', 'data-driven',
+      
+      // Industry context
+      'commercial', 'manufacturing', 'production', 'scale-up', 'cost', 'market', 'industrial',
+      
+      // Academic context
+      'fundamental', 'theoretical', 'mechanism', 'novel', 'discovery', 'investigation'
+    ];
+    
     const queryWords = query.toLowerCase().split(/\s+/).filter(w => w.length > 3);
-    const topics = [...new Set(queryWords)].slice(0, 5);
+    const contentWords = content.toLowerCase().split(/\s+/).filter(w => w.length > 3);
+    
+    // Prioritize materials science terms with enhanced scoring
+    const allWords = [...queryWords, ...contentWords];
+    const topics = [...new Set(allWords)]
+      .sort((a, b) => {
+        const aScore = materialsKeywords.includes(a) ? 1 : 0;
+        const bScore = materialsKeywords.includes(b) ? 1 : 0;
+        return bScore - aScore;
+      })
+      .slice(0, 8); // Increased from 6 to 8 for better coverage
+    
     return topics;
   }
 
@@ -374,17 +459,32 @@ export class ResearcherAgent {
     
     let score = 70; // Base score
     
-    // Boost for academic/official sources
-    if (url.includes('.edu') || url.includes('.gov')) score += 20;
-    else if (url.includes('.org')) score += 15;
-    else if (url.includes('wikipedia.org')) score += 10;
+    // Enhanced scoring for materials science sources
+    const academicDomains = ['.edu', '.ac.uk', '.ac.jp', '.ac.za'];
+    const governmentDomains = ['.gov', '.gov.uk', '.gc.ca'];
+    const materialsScienceSources = [
+      'nature.com', 'science.org', 'sciencedirect.com', 'acta-materialia.org', 'cell.com', 'pubs.rsc.org', 
+      'pubs.acs.org', 'link.springer.com', 'tms.org', 'asminternational.org', 'advanced.onlinelibrary.wiley.com', 'onlinelibrary.wiley.com'
+    ];
     
-    // Boost for reputable news sources
-    const reputableSources = ['bbc.com', 'reuters.com', 'ap.org', 'npr.org'];
+    // Academic sources
+    if (academicDomains.some(domain => url.includes(domain))) score += 25;
+    // Government sources  
+    else if (governmentDomains.some(domain => url.includes(domain))) score += 20;
+    // Materials science specific sources
+    else if (materialsScienceSources.some(source => url.includes(source))) score += 30;
+    // General reputable sources
+    else if (url.includes('.org') || url.includes('.edu') || url.includes('.gov')) score += 15;
+    else if (url.includes('wikipedia.org')) score += 5;
+    
+    // Reputable news sources
+    const reputableSources = ['bbc.com', 'reuters.com', 'ap.org', 'npr.org', 
+    'phys.org', 'rsc.org', 'acs.org', 'mrs.org', 'nature.com', 'tms.org', 'cell.com', 'asminternational.org'];
     if (reputableSources.some(source => url.includes(source))) score += 15;
     
-    // Penalty for certain domains
-    if (url.includes('blog') || url.includes('forum')) score -= 10;
+    // Penalties
+    if (url.includes('blog') || url.includes('forum') || url.includes('reddit.com')) score -= 15;
+    if (url.includes('youtube.com') || url.includes('facebook.com')) score -= 20;
     
     return Math.max(50, Math.min(100, score));
   }

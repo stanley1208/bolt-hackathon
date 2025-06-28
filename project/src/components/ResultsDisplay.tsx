@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { CheckCircle, AlertCircle, ExternalLink, FileText, BarChart3, Clock, RefreshCw, Globe, Link } from 'lucide-react';
+import { useState } from 'react';
+import { CheckCircle, AlertCircle, ExternalLink, FileText, BarChart3, Clock, RefreshCw, Globe, Link, BookOpen } from 'lucide-react';
 
 interface Source {
   id: number;
@@ -71,11 +71,11 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, query, 
 
   const getSourceTypeIcon = (type: string) => {
     switch (type) {
-      case 'academic': return '🎓';
-      case 'government': return '🏛️';
-      case 'organization': return '🏢';
-      case 'news_media': return '📰';
-      default: return '🌐';
+      case 'academic': return 'Academic';
+      case 'government': return 'Government';
+      case 'organization': return 'Organization';
+      case 'news_media': return 'News';
+      default: return 'Web';
     }
   };
 

@@ -1,18 +1,14 @@
-# 🚀 MARP 2.0 - Real AI-Powered Multi-Agent Research Platform
+# Real AI-Powered Multi-Agent Materials Science Research Platform
 
-## ✨ What's Changed
-
-Your platform now uses **real AI agents** instead of mock simulations!
-
-### 🔬 **New Research Agent**
+### **Materials Science Research Agent**
 - **Powered by Perplexity Deep Research API**
-- Performs actual web research and analysis
+- Performs actual web research and analysis on materials, properties, and applications
 - Multi-phase research with follow-up investigations
 - Real source verification and credibility assessment
-- Comprehensive reporting with citations
+- Comprehensive materials science reporting with citations
 
-### 📊 **Enhanced Features**
-- Real-time deep research analysis
+### **Enhanced Features**
+- Real-time deep materials science research analysis
 - Actual source citations and links
 - Executive summaries from AI analysis
 - Source credibility scoring
@@ -20,7 +16,7 @@ Your platform now uses **real AI agents** instead of mock simulations!
 
 ---
 
-## 🛠️ Setup Instructions
+## Setup Instructions
 
 ### 1. **Get Your Perplexity API Key**
 
@@ -56,50 +52,58 @@ The platform will start:
 
 ---
 
-## 🎯 **How It Works Now**
+## How It Works Now
 
-### **Research Agent (A1)**
-1. **Deep Research**: Uses Perplexity to perform comprehensive web research
-2. **Follow-up Analysis**: Conducts additional research on key findings
-3. **Source Verification**: Assesses credibility of all sources
-4. **Synthesis**: Creates detailed analysis with citations
+### **Materials Science Research Agent (A1)**
+1. **Deep Research**: Uses Perplexity to perform comprehensive materials science research
+2. **Follow-up Analysis**: Conducts additional research on key findings and recent developments
+3. **Source Verification**: Assesses credibility of all scientific sources
+4. **Synthesis**: Creates detailed materials science analysis with citations
 
 ### **Persona-Crafter (A2)**
-- Still creates evaluation frameworks (as before)
-- Determines appropriate judge personas
+- Creates evaluation frameworks for materials science domains
+- Determines appropriate materials science expert personas for A3
 
 ### **Judge Agent (A3)**
-- Evaluates the **real research** using AI criteria
-- Provides detailed scoring and rationale
+- Evaluates the research conducted by A1 using materials science criteria determined by A2
+- Provides detailed scoring and rationale from expert perspective
 
 ---
 
-## 🔍 **Test It Out**
+## Test It Out
 
-Try these research queries:
-
-```
-What are the latest developments in quantum computing?
-```
+Try these materials science research queries:
 
 ```
-How effective are renewable energy solutions in reducing carbon emissions?
+What are the properties and applications of graphene?
 ```
 
 ```
-What are the potential risks and benefits of AI in healthcare?
+How do carbon nanotubes compare to other nanomaterials?
+```
+
+```
+What are the latest developments in biodegradable polymers?
+```
+
+```
+Research the mechanical properties of titanium alloys
+```
+
+```
+What are the applications of quantum dots in electronics?
 ```
 
 You'll see:
-- ✅ **Real research** from actual web sources
-- ✅ **Proper citations** with links
-- ✅ **Source credibility** assessment
-- ✅ **Executive summaries** from AI analysis
-- ✅ **Multi-phase research** with follow-up
+
+- **Proper citations** with links to scientific literature
+- **Source credibility** assessment for web sources
+- **Executive summaries** from AI analysis
+- **Multi-phase research** with follow-up
 
 ---
 
-## 📈 **API Usage & Costs**
+## API Usage & Costs
 
 ### **Perplexity API**
 - **Model**: `llama-3.1-sonar-huge-128k-online`
@@ -113,7 +117,7 @@ You'll see:
 
 ---
 
-## 🚨 **Important Notes**
+## Important Notes
 
 1. **API Keys Required**: The platform won't work without valid API keys
 2. **Rate Limits**: Perplexity has rate limits - don't spam queries
@@ -122,14 +126,4 @@ You'll see:
 
 ---
 
-## 🎉 **You Now Have Real AI Agents!**
-
-Your platform has been transformed from a simulation into a **real AI-powered research system**. The agents now:
-
-- ✅ **Actually research** topics using web search
-- ✅ **Analyze real sources** and provide citations  
-- ✅ **Generate comprehensive reports** with AI
-- ✅ **Assess source credibility** automatically
-- ✅ **Provide actionable insights** based on real data
-
-**Test it out and see the difference!** 🚀 
+**Test it out and see the difference!** 
