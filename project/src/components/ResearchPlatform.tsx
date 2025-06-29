@@ -76,12 +76,12 @@ export const ResearchPlatform: React.FC = () => {
     
     newSocket.on('connect', () => {
       setConnected(true);
-      console.log('Connected to MARP server');
+      console.log('Connected to MSRP server');
     });
 
     newSocket.on('disconnect', () => {
       setConnected(false);
-      console.log('Disconnected from MARP server');
+      console.log('Disconnected from MSRP server');
     });
 
     newSocket.on('session_created', (data) => {
@@ -261,13 +261,15 @@ export const ResearchPlatform: React.FC = () => {
       
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Connection Status */}
-        <div className="mb-6 flex items-center justify-center">
-          <div className={`flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium ${
+        <div className="mb-8 flex items-center justify-center">
+          <div className={`flex items-center space-x-3 px-6 py-3 rounded-2xl text-sm font-semibold shadow-lg backdrop-blur-sm border ${
             connected 
-              ? 'bg-green-100 text-green-800 border border-green-200' 
-              : 'bg-red-100 text-red-800 border border-red-200'
+              ? 'bg-success-50/80 text-success-800 border-success-200/50 shadow-success-500/20' 
+              : 'bg-red-50/80 text-red-800 border-red-200/50 shadow-red-500/20'
           }`}>
-            <div className={`w-2 h-2 rounded-full ${connected ? 'bg-green-500' : 'bg-red-500'}`} />
+            <div className={`w-3 h-3 rounded-full ${connected ? 'bg-success-500 animate-pulse' : 'bg-red-500'}`}>
+              {connected && <div className="w-full h-full bg-success-400 rounded-full animate-ping"></div>}
+            </div>
             <span>{connected ? 'Connected to Materials Science Research Server' : 'Disconnected from Server'}</span>
           </div>
         </div>
@@ -282,18 +284,27 @@ export const ResearchPlatform: React.FC = () => {
 
         {/* Current Query Display */}
         {query && (
-          <div className="mb-8 bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-            <div className="flex items-start space-x-3">
-              <Search className="w-5 h-5 text-blue-600 mt-1 flex-shrink-0" />
+          <div className="mb-8 glass-effect rounded-2xl shadow-xl border border-white/30 p-8 card-hover">
+            <div className="flex items-start space-x-4">
+              <div className="p-3 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-xl shadow-lg">
+                <Search className="w-6 h-6 text-white" />
+              </div>
               <div className="flex-1">
-                <h3 className="text-lg font-semibold text-slate-900 mb-2">Materials Science Research Query</h3>
-                <p className="text-slate-700 leading-relaxed">{query}</p>
+                <h3 className="text-xl font-bold text-slate-900 mb-3">Materials Science Research Query</h3>
+                <div className="bg-white/60 rounded-xl p-4 backdrop-blur-sm border border-white/20 mb-4">
+                  <p className="text-slate-700 leading-relaxed font-medium">{query}</p>
+                </div>
                 {sessionId && (
-                  <p className="text-sm text-slate-500 mt-2">Session ID: {sessionId}</p>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-sm text-slate-500">Session ID:</span>
+                    <code className="text-sm text-slate-700 bg-slate-100 px-2 py-1 rounded font-mono">{sessionId}</code>
+                  </div>
                 )}
               </div>
               {isProcessing && (
-                <Loader2 className="w-5 h-5 text-blue-600 animate-spin" />
+                <div className="p-2">
+                  <Loader2 className="w-6 h-6 text-primary-600 animate-spin" />
+                </div>
               )}
             </div>
           </div>

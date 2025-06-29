@@ -110,33 +110,46 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, query, 
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-slate-200">
+    <div className="glass-effect rounded-2xl shadow-xl border border-white/30 overflow-hidden">
       {/* Header */}
-      <div className="p-6 border-b border-slate-200">
+      <div className="p-8 bg-gradient-to-br from-white/50 to-white/20 backdrop-blur-sm border-b border-white/20">
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <div className="flex items-center space-x-3 mb-2">
-              <CheckCircle className="w-6 h-6 text-green-600" />
-              <h2 className="text-xl font-semibold text-slate-900">Research Analysis Complete</h2>
+            <div className="flex items-center space-x-4 mb-4">
+              <div className="p-3 bg-gradient-to-br from-success-500 to-success-600 rounded-xl shadow-lg">
+                <CheckCircle className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-slate-900">Research Analysis Complete</h2>
+                <p className="text-slate-600 font-medium">Comprehensive multi-agent evaluation results</p>
+              </div>
             </div>
-            <p className="text-slate-600 mb-4">{query}</p>
+            <div className="bg-white/60 rounded-xl p-4 backdrop-blur-sm border border-white/20 mb-6">
+              <p className="text-slate-700 font-medium leading-relaxed">{query}</p>
+            </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className={`p-3 rounded-lg border ${getScoreColor(results.overallScore)}`}>
-                <div className="text-2xl font-bold">{results.overallScore}/100</div>
-                <div className="text-sm font-medium">{results.assessment}</div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className={`p-6 rounded-xl border-2 shadow-lg ${getScoreColor(results.overallScore)}`}>
+                <div className="text-center">
+                  <div className="text-3xl font-bold mb-2">{results.overallScore}/100</div>
+                  <div className="text-sm font-semibold uppercase tracking-wide">{results.assessment}</div>
+                </div>
               </div>
               
               {researchData && (
                 <>
-                  <div className="p-3 rounded-lg bg-slate-50 border border-slate-200">
-                    <div className="text-2xl font-bold text-slate-700">{researchData.sources.length}</div>
-                    <div className="text-sm text-slate-600">Sources Analyzed</div>
+                  <div className="p-6 rounded-xl bg-gradient-to-br from-primary-50 to-primary-100 border-2 border-primary-200 shadow-lg">
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-primary-700 mb-2">{researchData.sources.length}</div>
+                      <div className="text-sm font-semibold text-primary-600 uppercase tracking-wide">Sources Analyzed</div>
+                    </div>
                   </div>
                   
-                  <div className="p-3 rounded-lg bg-slate-50 border border-slate-200">
-                    <div className="text-2xl font-bold text-slate-700">{researchData.confidenceScore}%</div>
-                    <div className="text-sm text-slate-600">Research Confidence</div>
+                  <div className="p-6 rounded-xl bg-gradient-to-br from-secondary-50 to-secondary-100 border-2 border-secondary-200 shadow-lg">
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-secondary-700 mb-2">{researchData.confidenceScore}%</div>
+                      <div className="text-sm font-semibold text-secondary-600 uppercase tracking-wide">Research Confidence</div>
+                    </div>
                   </div>
                 </>
               )}
@@ -145,7 +158,7 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, query, 
           
           <button
             onClick={onReset}
-            className="flex items-center space-x-2 px-4 py-2 text-slate-600 hover:text-slate-800 hover:bg-slate-50 rounded-lg transition-colors"
+            className="btn-secondary flex items-center space-x-2"
           >
             <RefreshCw className="w-4 h-4" />
             <span>New Research</span>
@@ -154,8 +167,8 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, query, 
       </div>
 
       {/* Tabs */}
-      <div className="border-b border-slate-200">
-        <nav className="flex space-x-8 px-6">
+      <div className="bg-white/30 backdrop-blur-sm border-b border-white/20">
+        <nav className="flex space-x-8 px-8">
           {[
             { id: 'overview', label: 'Overview', icon: BarChart3 },
             { id: 'research', label: 'Research Analysis', icon: FileText },
@@ -166,10 +179,10 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, query, 
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+              className={`flex items-center space-x-2 py-4 px-2 border-b-3 font-semibold text-sm transition-all duration-200 ${
                 activeTab === tab.id
-                  ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
+                  ? 'border-primary-500 text-primary-700 bg-primary-50/50'
+                  : 'border-transparent text-slate-600 hover:text-slate-800 hover:border-slate-300 hover:bg-white/20'
               }`}
             >
               <tab.icon className="w-4 h-4" />
@@ -180,7 +193,7 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, query, 
       </div>
 
       {/* Tab Content */}
-      <div className="p-6">
+      <div className="p-8 bg-white/20 backdrop-blur-sm">
         {activeTab === 'overview' && (
           <div className="space-y-6">
             {/* Executive Summary */}
@@ -274,7 +287,7 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, query, 
                         <div className="font-medium text-slate-700">{researchData.metadata.totalSources}</div>
                       </div>
                       <div>
-                        <span className="text-slate-500">Avg. Credibility:</span>
+                        <span className="text-slate-500">Avg. Strength:</span>
                         <div className="font-medium text-slate-700">{Math.round(researchData.metadata.averageSourceCredibility)}%</div>
                       </div>
                     </div>
@@ -367,7 +380,7 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, query, 
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-semibold text-slate-900">Research Sources</h3>
               <span className="text-sm text-slate-500">
-                {researchData.sources.length} sources • Avg. credibility: {Math.round(researchData.metadata?.averageSourceCredibility || 0)}%
+                {researchData.sources.length} sources • Avg. strength: {Math.round(researchData.metadata?.averageSourceCredibility || 0)}%
               </span>
             </div>
 
@@ -381,7 +394,7 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, query, 
                     </div>
                     <div className="flex items-center space-x-2">
                       <span className={`px-2 py-1 rounded text-xs font-medium ${getScoreColor(source.credibilityScore)}`}>
-                        {source.credibilityScore}% credible
+                        {source.credibilityScore}% strength
                       </span>
                     </div>
                   </div>
