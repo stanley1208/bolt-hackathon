@@ -86,11 +86,6 @@ export class Judge {
         rationale = 'Assessed depth of technical analysis and materials science terminology usage';
         break;
         
-      case 'Materials Science Tetrahedron Integration':
-        score = this.evaluateTetrahedronIntegration(researchResults);
-        rationale = 'Checked for comprehensive coverage of Structure-Properties-Processing-Performance relationships';
-        break;
-        
       case 'Source Quality':
         score = this.evaluateSourceQuality(researchResults);
         rationale = 'Analyzed source credibility, diversity, and relevance to materials science';
@@ -141,26 +136,17 @@ export class Judge {
     if (analysisLength > 2000) score += 2;
     else if (analysisLength < 500) score -= 2;
     
-    // Check for technical concepts
+    // Check for technical concepts and materials science terminology
     const content = JSON.stringify(researchResults).toLowerCase();
     const technicalTerms = ['microstructure', 'thermodynamics', 'kinetics', 'characterization', 'mechanical properties'];
     const termCount = technicalTerms.filter(term => content.includes(term)).length;
     if (termCount >= 3) score += 1;
     else if (termCount === 0) score -= 1;
     
-    return Math.max(1, Math.min(10, score));
-  }
-
-  evaluateTetrahedronIntegration(researchResults) {
-    let score = 5;
-    
-    const content = JSON.stringify(researchResults).toLowerCase();
-    const tetrahedronElements = ['structure', 'properties', 'processing', 'performance'];
-    const elementCount = tetrahedronElements.filter(element => content.includes(element)).length;
-    
-    if (elementCount >= 4) score += 3; // All elements covered
-    else if (elementCount >= 3) score += 1; // Most elements covered
-    else if (elementCount <= 1) score -= 2; // Poor coverage
+    // Check for appropriate materials science context (tetrahedron as background)
+    const materialsTerms = ['structure', 'properties', 'processing', 'performance', 'material', 'crystal', 'phase'];
+    const materialsTermCount = materialsTerms.filter(term => content.includes(term)).length;
+    if (materialsTermCount >= 4) score += 1; // Good materials science coverage
     
     return Math.max(1, Math.min(10, score));
   }

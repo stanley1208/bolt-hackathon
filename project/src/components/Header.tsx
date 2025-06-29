@@ -1,4 +1,4 @@
-import { Brain, Activity, Zap, Sparkles } from 'lucide-react';
+import { Brain, Activity, Zap, Sparkles, Shield, CheckCircle } from 'lucide-react';
 
 interface HeaderProps {
   connected: boolean;
@@ -19,51 +19,19 @@ export const Header: React.FC<HeaderProps> = ({ connected }) => {
               {connected && (
                 <div className="absolute -top-2 -right-2 flex items-center justify-center">
                   <div className="w-6 h-6 bg-gradient-to-r from-success-400 to-success-600 rounded-full border-3 border-white shadow-lg pulse-glow">
-                    <div className="w-full h-full bg-success-300 rounded-full animate-ping opacity-75"></div>
+                    <CheckCircle className="w-3 h-3 text-white" />
                   </div>
                   <Sparkles className="absolute w-3 h-3 text-white animate-pulse" />
                 </div>
               )}
             </div>
             <div className="space-y-2">
-              <h1 className="text-5xl font-bold gradient-text mb-2 tracking-tight text-glow">MSRP</h1>
-              <p className="text-slate-700 font-semibold text-lg mb-1">Materials Science Research Platform</p>
+              <h1 className="text-5xl font-bold gradient-text mb-2 tracking-tight text-glow">MSERP.ai</h1>
+              <p className="text-slate-700 font-semibold text-lg mb-1">Materials Science & Engineering Research Platform</p>
               <p className="text-sm text-slate-500 font-medium flex items-center space-x-2">
-                <Sparkles className="w-4 h-4 text-primary-500" />
-                <span>Advanced multi-agent research system</span>
+                <Shield className="w-4 h-4 text-primary-500" />
+                <span>First the findings. Then the verdict.</span>
               </p>
-            </div>
-          </div>
-          
-          <div className="flex items-center space-x-8">
-            <div className="text-right">
-              <div className={`flex items-center space-x-3 font-bold text-xl mb-2 ${
-                connected ? 'text-success-700' : 'text-slate-500'
-              }`}>
-                {connected ? (
-                  <>
-                    <div className="relative">
-                      <Zap className="w-6 h-6 text-success-500 pulse-glow" />
-                      <div className="absolute inset-0 animate-ping">
-                        <Zap className="w-6 h-6 text-success-400 opacity-30" />
-                      </div>
-                    </div>
-                    <span className="text-glow">System Active</span>
-                  </>
-                ) : (
-                  <>
-                    <Activity className="w-6 h-6 text-slate-400" />
-                    <span>System Offline</span>
-                  </>
-                )}
-              </div>
-              <div className={`text-sm font-semibold px-4 py-2 rounded-full backdrop-blur-sm ${
-                connected 
-                  ? 'text-success-700 bg-success-50/80 border border-success-200/50' 
-                  : 'text-slate-500 bg-slate-50/80 border border-slate-200/50'
-              }`}>
-                {connected ? '🚀 All agents ready' : '⏸️ Disconnected'}
-              </div>
             </div>
           </div>
         </div>

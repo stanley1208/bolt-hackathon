@@ -193,13 +193,12 @@ export class PersonaCrafterAgent {
 
   generateCriteria(categories, queryAnalysis) {
     const baseCriteria = [
-      { name: 'Scientific Accuracy', weight: 0.18, description: 'Accuracy of scientific facts, data, and technical information presented in the research' },
-      { name: 'Research Methodology', weight: 0.15, description: 'Quality and appropriateness of research methods, experimental design, and analytical approaches' },
-      { name: 'Source Quality', weight: 0.15, description: 'Credibility and relevance of scientific sources, peer-reviewed literature, and authoritative references' },
-      { name: 'Technical Depth', weight: 0.15, description: 'Depth of technical analysis, understanding of materials properties, and scientific principles' },
-      { name: 'Materials Science Tetrahedron Integration', weight: 0.20, description: 'Demonstrates deep understanding of Structure-Properties-Processing-Performance relationships. Evaluates how structural modifications affect properties, how processing parameters influence microstructure, and how these translate to performance metrics. Includes appropriate characterization strategies and considers design constraints, sustainability, and real-world implementation challenges.' },
-      { name: 'Safety and Ethics Awareness', weight: 0.08, description: 'Consideration of safety protocols, environmental impact, ethical implications, and regulatory compliance' },
-      { name: 'Practical Implementation', weight: 0.09, description: 'Assessment of scalability, manufacturability, cost-effectiveness, and commercial viability' }
+      { name: 'Scientific Accuracy', weight: 0.20, description: 'Accuracy of scientific facts, data, and technical information presented in the research' },
+      { name: 'Research Methodology', weight: 0.18, description: 'Quality and appropriateness of research methods, experimental design, and analytical approaches' },
+      { name: 'Source Quality', weight: 0.18, description: 'Credibility and relevance of scientific sources, peer-reviewed literature, and authoritative references' },
+      { name: 'Technical Depth', weight: 0.20, description: 'Depth of technical analysis, understanding of materials properties, and scientific principles. Considers materials science framework understanding as background context.' },
+      { name: 'Safety and Ethics Awareness', weight: 0.12, description: 'Consideration of safety protocols, environmental impact, ethical implications, and regulatory compliance' },
+      { name: 'Practical Implementation', weight: 0.12, description: 'Assessment of scalability, manufacturability, cost-effectiveness, and commercial viability' }
     ];
 
     // Enhanced specialized criteria

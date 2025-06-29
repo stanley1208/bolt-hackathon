@@ -93,21 +93,21 @@ const getStatusInfo = (status: string) => {
         color: 'text-primary-700 bg-primary-50/80 border-primary-200/50',
         icon: Zap,
         iconColor: 'text-primary-600',
-        badge: '🚀'
+        badge: '\u{1F680}' // 🚀
       };
     case 'completed':
       return {
         color: 'text-success-700 bg-success-50/80 border-success-200/50',
         icon: CheckCircle,
         iconColor: 'text-success-600',
-        badge: '✨'
+        badge: '\u{2728}' // ✨
       };
     default:
       return {
         color: 'text-slate-600 bg-slate-50/80 border-slate-200/50',
         icon: Clock,
         iconColor: 'text-slate-400',
-        badge: '⏸️'
+        badge: '\u{23F8}\u{FE0F}' // ⏸️
       };
   }
 };
@@ -156,14 +156,13 @@ export const AgentCard: React.FC<AgentCardProps> = ({ agent }) => {
             </div>
             <div className="space-y-1">
               <h3 className="font-bold text-slate-900 text-xl gradient-text">{agent.displayName}</h3>
-              <p className="text-sm text-slate-500 font-semibold">{agent.name}</p>
             </div>
           </div>
           
           <div className="flex items-center space-x-4">
             {agent.status === 'active' && <Loader2 className="w-6 h-6 text-primary-600 animate-spin pulse-glow" />}
             <div className={`flex items-center space-x-2 px-4 py-2 text-sm font-bold rounded-2xl border backdrop-blur-sm ${statusInfo.color}`}>
-              <span className="text-lg">{statusInfo.badge}</span>
+              <span className="text-lg emoji">{statusInfo.badge}</span>
               <StatusIcon className={`w-4 h-4 ${statusInfo.iconColor}`} />
               <span className="capitalize">{agent.status}</span>
             </div>

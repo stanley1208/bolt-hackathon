@@ -126,30 +126,35 @@ Considering properties to structure, a materials scientist or engineer would thi
 
 Use this paradigm to guide your analysis and identify important relationships, but focus your research scope appropriately for the specific query.
 
-Respond in the form of a comprehensive materials science research report, using markdown formatting. Here is an example of the structure and style you should use:
+To write the report, please:
+1. Structure the report using markdown formatting with:
+   - Clear headings and subheadings (## and ###)
+   - Bullet points for lists of information
+   - Numbered lists for sequential steps or prioritized items
+   - Bold or italic text for emphasis on critical concepts
+   - Code blocks when technical information is present
+ 2. Use the following exact structure for the report:
 
-# Materials Science Research Report
-
-## Brief Re-Statement of the Query and Research Methodology
+## Restatement of the Query and Research Methodology
 [Insert brief statement of (1) your understanding of the query within the context of the materials science paradigm and (2) your research methodology in view of the same]
 
 ## Summary
 [Insert brief summary of key findings]
 
 ## Analysis
-[Insert analysis based on deep research, with sources and citations embedded after each sentence or finding]
+[Insert detailed analysis based on deep research, with sources and citations embedded after each sentence or finding]
 
-## Considerations
-[Insert any considerations that are relevant to the query, including recent research, innovations, or technological advances]
+## Considerations 
+[Insert any considerations that are relevant to the query, including recent research and developments, research gaps, contradictory viewpoints, or technological advances]
 
 ## Conclusion
-[Insert conclusion based on the analysis and considerations]
-
-          }`
+[Insert conclusion based on the analysis and considerations]`
           },
           {
             role: 'user',
-            content: `Research and analyze: "${query}". Please provide a comprehensive materials science research report with detailed analysis, sources, and citations. Format your report in clean, well-structured markdown with appropriate headers, bullet points, and formatting. Use markdown syntax for emphasis, lists, and organization.`
+            content: `Research and analyze: "${query}". Please provide a comprehensive research report with detailed analysis, sources, and citations. Use proper markdown formatting with clear headers and structure as specified in the system message. 
+
+IMPORTANT: You will have access to multiple sources - please use AS MANY OF THEM AS POSSIBLE throughout your analysis. Don't limit yourself to just the first 2-3 sources. Distribute your citations across ALL available sources. Each section should reference different sources, and each major claim should be backed by appropriate citations. Use numbered citations [1], [2], [3], [4], [5], etc. frequently and vary which sources you cite for different aspects of your analysis.`
           }
         ],
         temperature: 0.2,
@@ -203,7 +208,7 @@ Respond in the form of a comprehensive materials science research report, using 
       console.log(`[DEBUG] Final Citations Count:`, citations.length);
 
       return {
-        content: researchContent,
+        content: this.cleanMarkdown(researchContent),
         citations: citations,
         timestamp: new Date().toISOString(),
         query: query,
@@ -220,155 +225,155 @@ Respond in the form of a comprehensive materials science research report, using 
       throw new Error(`Deep research failed: ${error.response?.data?.error?.message || error.message}`);
     }
   }
+// // Follow-up research agent
+//   async performFollowUpResearch(sessionId, originalQuery, initialResearch) {
+//     // Extract key topics from initial research for follow-up
+//     const followUpQuery = `Based on the research about "${originalQuery}", 
+//     provide additional detailed analysis on the most important aspects, 
+//     recent developments, and any contradictory viewpoints. 
+//     Focus on filling gaps and adding depth to: ${this.extractKeyTopics(initialResearch.content)}`;
 
-  async performFollowUpResearch(sessionId, originalQuery, initialResearch) {
-    // Extract key topics from initial research for follow-up
-    const followUpQuery = `Based on the research about "${originalQuery}", 
-    provide additional detailed analysis on the most important aspects, 
-    recent developments, and any contradictory viewpoints. 
-    Focus on filling gaps and adding depth to: ${this.extractKeyTopics(initialResearch.content)}`;
+//     try {
+//       const response = await this.perplexityAPI.post('/chat/completions', {
+//         model: config.perplexity.deepResearchModel,
+//         messages: [
+//           {
+//             role: 'system',
+//             content: 'You are conducting follow-up materials science research to add depth and nuance to initial findings. Focus on recent developments, experimental results, technological applications, and detailed analysis. Use the materials science tetrahedron framework (Structure-Properties-Processing-Performance) to guide your analysis and identify important relationships. Provide your response using proper markdown formatting with clear headers and structured sections.'
+//           },
+//           {
+//             role: 'user',
+//             content: followUpQuery
+//           }
+//         ],
+//         temperature: 0.3,
+//         max_tokens: 3000,
+//         return_citations: true
+//       });
 
-    try {
-      const response = await this.perplexityAPI.post('/chat/completions', {
-        model: config.perplexity.deepResearchModel,
-        messages: [
-          {
-            role: 'system',
-            content: 'You are conducting follow-up materials science research to add depth and nuance to initial findings. Focus on recent developments, experimental results, technological applications, and detailed analysis. Use the materials science tetrahedron framework (Structure-Properties-Processing-Performance) to guide your analysis and identify important relationships. Format your response in clean, well-structured markdown with appropriate headers, bullet points, and formatting.'
-          },
-          {
-            role: 'user',
-            content: followUpQuery
-          }
-        ],
-        temperature: 0.3,
-        max_tokens: 3000,
-        return_citations: true
-      });
+//       return {
+//         content: this.cleanMarkdown(response.data.choices[0].message.content),
+//         citations: response.data.citations || [],
+//         timestamp: new Date().toISOString(),
+//         type: 'follow_up'
+//       };
 
-      return {
-        content: response.data.choices[0].message.content,
-        citations: response.data.citations || [],
-        timestamp: new Date().toISOString(),
-        type: 'follow_up'
-      };
+//     } catch (error) {
+//       console.warn('Follow-up research failed, continuing with initial research only:', error.message);
+//       return null;
+//     }
+//   }
 
-    } catch (error) {
-      console.warn('Follow-up research failed, continuing with initial research only:', error.message);
-      return null;
-    }
-  }
+//   async verifyAndAssessSources(sessionId, primaryResearch, followUpResearch) {
+//     // Combine citations from both research phases
+//     const allCitations = [
+//       ...primaryResearch.citations,
+//       ...(followUpResearch?.citations || [])
+//     ];
 
-  async verifyAndAssessSources(sessionId, primaryResearch, followUpResearch) {
-    // Combine citations from both research phases
-    const allCitations = [
-      ...primaryResearch.citations,
-      ...(followUpResearch?.citations || [])
-    ];
+//     // Convert citations to structured source objects
+//     const sources = allCitations.map((citation, index) => {
+//       // Handle both string URLs and object citations
+//       const url = typeof citation === 'string' ? citation : citation.url;
+//       const title = typeof citation === 'object' && citation.title ? 
+//         citation.title : 
+//         this.generateTitleFromUrl(url);
+//       const snippet = typeof citation === 'object' && citation.snippet ? 
+//         citation.snippet : 
+//         `Source content from ${this.getDomainFromUrl(url)}`;
 
-    // Convert citations to structured source objects
-    const sources = allCitations.map((citation, index) => {
-      // Handle both string URLs and object citations
-      const url = typeof citation === 'string' ? citation : citation.url;
-      const title = typeof citation === 'object' && citation.title ? 
-        citation.title : 
-        this.generateTitleFromUrl(url);
-      const snippet = typeof citation === 'object' && citation.snippet ? 
-        citation.snippet : 
-        `Source content from ${this.getDomainFromUrl(url)}`;
+//       return {
+//         id: index + 1,
+//         title: title,
+//         url: url,
+//         snippet: snippet,
+//         credibilityScore: this.assessSourceCredibility({ url, title }),
+//         type: this.categorizeSource({ url }),
+//         accessDate: new Date().toISOString()
+//       };
+//     });
 
-      return {
-        id: index + 1,
-        title: title,
-        url: url,
-        snippet: snippet,
-        credibilityScore: this.assessSourceCredibility({ url, title }),
-        type: this.categorizeSource({ url }),
-        accessDate: new Date().toISOString()
-      };
-    });
+//     console.log(`[DEBUG] Converted ${allCitations.length} citations to ${sources.length} structured sources`);
+//     console.log(`[DEBUG] Sample source:`, sources[0]);
 
-    console.log(`[DEBUG] Converted ${allCitations.length} citations to ${sources.length} structured sources`);
-    console.log(`[DEBUG] Sample source:`, sources[0]);
+//     return {
+//       primaryResearch,
+//       followUpResearch,
+//       sources,
+//       totalSources: sources.length,
+//       averageCredibility: sources.reduce((sum, s) => sum + s.credibilityScore, 0) / sources.length
+//     };
+//   }
 
-    return {
-      primaryResearch,
-      followUpResearch,
-      sources,
-      totalSources: sources.length,
-      averageCredibility: sources.reduce((sum, s) => sum + s.credibilityScore, 0) / sources.length
-    };
-  }
-
-  generateTitleFromUrl(url) {
-    try {
-      const domain = new URL(url).hostname.replace('www.', '');
+//   generateTitleFromUrl(url) {
+//     try {
+//       const domain = new URL(url).hostname.replace('www.', '');
       
-      // Extract meaningful part from path
-      const path = new URL(url).pathname;
-      const pathParts = path.split('/').filter(part => part && part.length > 2);
+//       // Extract meaningful part from path
+//       const path = new URL(url).pathname;
+//       const pathParts = path.split('/').filter(part => part && part.length > 2);
       
-      if (pathParts.length > 0) {
-        const titlePart = pathParts[pathParts.length - 1]
-          .replace(/-/g, ' ')
-          .replace(/_/g, ' ')
-          .split(' ')
-          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-          .join(' ');
-        return `${titlePart} - ${domain}`;
-      }
+//       if (pathParts.length > 0) {
+//         const titlePart = pathParts[pathParts.length - 1]
+//           .replace(/-/g, ' ')
+//           .replace(/_/g, ' ')
+//           .split(' ')
+//           .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+//           .join(' ');
+//         return `${titlePart} - ${domain}`;
+//       }
       
-      return `Research Source - ${domain}`;
-    } catch {
-      return 'Research Source';
-    }
-  }
+//       return `Research Source - ${domain}`;
+//     } catch {
+//       return 'Research Source';
+//     }
+//   }
 
-  getDomainFromUrl(url) {
-    try {
-      return new URL(url).hostname.replace('www.', '');
-    } catch {
-      return 'Unknown Domain';
-    }
-  }
+//   getDomainFromUrl(url) {
+//     try {
+//       return new URL(url).hostname.replace('www.', '');
+//     } catch {
+//       return 'Unknown Domain';
+//     }
+//   }
 
-  async synthesizeFindings(sessionId, query, verifiedFindings) {
-    const { primaryResearch, followUpResearch, sources } = verifiedFindings;
+//   async synthesizeFindings(sessionId, query, verifiedFindings) {
+//     const { primaryResearch, followUpResearch, sources } = verifiedFindings;
 
-    // Extract key findings and themes
-    const keyFindings = this.extractKeyFindings(primaryResearch.content, followUpResearch?.content);
-    const topics = this.extractTopics(query, primaryResearch.content);
+//     // Extract key findings and themes
+//     const keyFindings = this.extractKeyFindings(primaryResearch.content, followUpResearch?.content);
+//     const topics = this.extractTopics(query, primaryResearch.content);
 
-    // Calculate overall confidence based on source quality and consistency
-    const confidenceScore = this.calculateConfidenceScore(sources, keyFindings);
+//     // Calculate overall confidence based on source quality and consistency
+//     const confidenceScore = this.calculateConfidenceScore(sources, keyFindings);
     
-    return {
-      query,
-      executiveSummary: this.generateExecutiveSummary(primaryResearch.content),
-      keyFindings,
-      detailedAnalysis: {
-        primaryResearch: primaryResearch.content,
-        followUpResearch: followUpResearch?.content || null
-      },
-      sources,
-      topics,
-      methodology: 'AI-powered deep research using Perplexity with multi-phase analysis and source verification',
-      confidenceScore,
-      limitations: [
-        'Analysis based on publicly available information',
-        'Information current as of research date',
-        'AI-generated synthesis may have interpretation limitations',
-        'Source availability and accessibility may affect completeness'
-      ],
-      metadata: {
-        researchDuration: 'Multi-phase deep research',
-        totalSources: sources.length,
-        averageSourceCredibility: verifiedFindings.averageCredibility,
-        researchModel: config.perplexity.deepResearchModel,
-      timestamp: new Date().toISOString()
-      }
-    };
-  }
+//     return {
+//       query,
+//       executiveSummary: this.generateExecutiveSummary(primaryResearch.content),
+//       keyFindings,
+//       detailedAnalysis: {
+//         primaryResearch: primaryResearch.content,
+//         followUpResearch: followUpResearch?.content || null
+//       },
+//       sources,
+//       topics,
+//       methodology: 'AI-powered deep research using Perplexity with multi-phase analysis and source verification',
+//       confidenceScore,
+//       limitations: [
+//         'Analysis based on publicly available information',
+//         'Information current as of research date',
+//         'AI-generated synthesis may have interpretation limitations',
+//         'Source availability and accessibility may affect completeness'
+//       ],
+//       metadata: {
+//         researchDuration: 'Multi-phase deep research',
+//         totalSources: sources.length,
+//         averageSourceCredibility: verifiedFindings.averageCredibility,
+//         researchModel: config.perplexity.deepResearchModel,
+//       timestamp: new Date().toISOString()
+//       }
+//     };
+//   }
 
   extractKeyTopics(content) {
     // Simple extraction of key topics from content
@@ -460,7 +465,7 @@ Respond in the form of a comprehensive materials science research report, using 
     let score = 70; // Base score
     
     // Enhanced scoring for materials science sources
-    const academicDomains = ['.edu', '.ac.uk', '.ac.jp', '.ac.za'];
+    const academicDomains = ['.edu', '.ac.uk', '.ac.jp', '.ac.za','.edu.cn','.edu.hk','.edu.mo','.edu.tw','.ac.uk',''];
     const governmentDomains = ['.gov', '.gov.uk', '.gc.ca'];
     const materialsScienceSources = [
       'nature.com', 'science.org', 'sciencedirect.com', 'acta-materialia.org', 'cell.com', 'pubs.rsc.org', 
@@ -511,5 +516,16 @@ Respond in the form of a comprehensive materials science research report, using 
     // Extract first substantial paragraph as executive summary
     const paragraphs = content.split('\n\n').filter(p => p.length > 100);
     return paragraphs[0]?.substring(0, 300) + '...' || 'Research analysis completed successfully.';
+  }
+
+  cleanMarkdown(text) {
+    if (!text) return text;
+    
+    return text
+      // Clean up extra whitespace but preserve markdown formatting
+      .replace(/\n{4,}/g, '\n\n\n')  // Limit to max 3 consecutive line breaks
+      .replace(/\r\n/g, '\n')        // Normalize line endings
+      .replace(/\t/g, '  ')          // Convert tabs to spaces
+      .trim();
   }
 }

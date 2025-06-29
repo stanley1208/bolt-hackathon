@@ -53,7 +53,7 @@ export const ResearchPlatform: React.FC = () => {
     },
     {
       name: 'A2-Persona-Crafter',
-      displayName: 'Persona-Crafter',
+      displayName: 'Persona Crafter',
       status: 'idle',
       currentActivity: 'Waiting for query...',
       progress: 0,
@@ -260,20 +260,6 @@ export const ResearchPlatform: React.FC = () => {
       <Header connected={connected} />
       
       <div className="container mx-auto px-4 py-8 max-w-7xl">
-        {/* Connection Status */}
-        <div className="mb-8 flex items-center justify-center">
-          <div className={`flex items-center space-x-3 px-6 py-3 rounded-2xl text-sm font-semibold shadow-lg backdrop-blur-sm border ${
-            connected 
-              ? 'bg-success-50/80 text-success-800 border-success-200/50 shadow-success-500/20' 
-              : 'bg-red-50/80 text-red-800 border-red-200/50 shadow-red-500/20'
-          }`}>
-            <div className={`w-3 h-3 rounded-full ${connected ? 'bg-success-500 animate-pulse' : 'bg-red-500'}`}>
-              {connected && <div className="w-full h-full bg-success-400 rounded-full animate-ping"></div>}
-            </div>
-            <span>{connected ? 'Connected to Materials Science Research Server' : 'Disconnected from Server'}</span>
-          </div>
-        </div>
-
         {/* Query Form */}
         <div className="mb-8">
           <QueryForm 

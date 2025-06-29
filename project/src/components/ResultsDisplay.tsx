@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { CheckCircle, AlertCircle, ExternalLink, FileText, BarChart3, Clock, RefreshCw, Globe, Link, BookOpen } from 'lucide-react';
+import React, { useState } from 'react';
+import { CheckCircle, ExternalLink, FileText, BarChart3, Globe, Link, RefreshCw, AlertCircle, Shield } from 'lucide-react';
 
 interface Source {
   id: number;
@@ -56,10 +56,81 @@ interface ResultsDisplayProps {
 }
 
 export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, query, onReset }) => {
-  const [activeTab, setActiveTab] = useState<'overview' | 'research' | 'evaluation' | 'sources' | 'trail'>('overview');
+  const [activeTab, setActiveTab] = useState<'research' | 'sources' | 'trail'>('research');
 
   // Extract research data from results
   const researchData = results.researchData || extractResearchFromResults(results);
+
+  // Handle citation clicks
+  React.useEffect(() => {
+    const handleCitationClick = (e: Event) => {
+      const target = e.target as HTMLAnchorElement;
+      if (target.href && target.href.includes('#source-')) {
+        e.preventDefault();
+        setActiveTab('sources');
+        // Small delay to ensure tab content is rendered before scrolling
+        setTimeout(() => {
+          const sourceId = target.href.split('#')[1];
+          const sourceElement = document.getElementById(sourceId);
+          if (sourceElement) {
+            sourceElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            // Add a temporary highlight effect
+            sourceElement.classList.add('ring-2', 'ring-blue-500', 'ring-opacity-50');
+            setTimeout(() => {
+              sourceElement.classList.remove('ring-2', 'ring-blue-500', 'ring-opacity-50');
+            }, 2000);
+          }
+        }, 100);
+      }
+    };
+
+    // Add event listener to all citation links
+    document.addEventListener('click', handleCitationClick);
+    
+    // Cleanup
+    return () => {
+      document.removeEventListener('click', handleCitationClick);
+    };
+  }, []);
+
+  // Function to render markdown to HTML for display
+  const renderMarkdown = (text: string): string => {
+    if (!text) return text;
+    
+    let result = text
+      // Convert headers
+      .replace(/^### (.*$)/gm, '<h3 class="text-lg font-semibold text-slate-900 mb-3 mt-6">$1</h3>')
+      .replace(/^## (.*$)/gm, '<h2 class="text-xl font-bold text-slate-900 mb-4 mt-8">$1</h2>')
+      .replace(/^# (.*$)/gm, '<h1 class="text-2xl font-bold text-slate-900 mb-6 mt-10">$1</h1>')
+      // Convert bold text
+      .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-slate-800">$1</strong>')
+      // Convert italic text
+      .replace(/\*(.*?)\*/g, '<em class="italic">$1</em>')
+      // Convert citation numbers to clickable links
+      .replace(/\[(\d+)\]/g, '<a href="#source-$1" class="text-blue-600 hover:text-blue-800 font-medium cursor-pointer">[$1]</a>')
+      // Convert bullet points
+      .replace(/^\* (.*$)/gm, '<li>$1</li>')
+      .replace(/^- (.*$)/gm, '<li>$1</li>')
+      // Convert numbered lists
+      .replace(/^\d+\. (.*$)/gm, '<li>$1</li>')
+      // Convert line breaks
+      .replace(/\n\n/g, '</p><p class="mb-3">');
+
+    // Wrap consecutive <li> elements in <ul> tags
+    result = result.replace(/(<li>.*?<\/li>(\n<li>.*?<\/li>)*)/g, '<ul class="list-disc ml-6 mb-4 space-y-1">$1</ul>');
+    
+    // Wrap in paragraph tags and clean up
+    result = result
+      .replace(/^/, '<p class="mb-3">')
+      .replace(/$/, '</p>')
+      // Clean up empty paragraphs
+      .replace(/<p class="mb-3"><\/p>/g, '')
+      // Fix paragraphs that contain only lists
+      .replace(/<p class="mb-3">(<ul.*?<\/ul>)<\/p>/g, '$1')
+      .trim();
+
+    return result;
+  };
 
   const getScoreColor = (score: number) => {
     if (score >= 90) return 'text-green-600 bg-green-50 border-green-200';
@@ -121,59 +192,50 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, query, 
               </div>
               <div>
                 <h2 className="text-2xl font-bold text-slate-900">Research Analysis Complete</h2>
-                <p className="text-slate-600 font-medium">Comprehensive multi-agent evaluation results</p>
+                <p className="text-slate-600 font-medium">Comprehensive research results with trustworthiness assessment</p>
               </div>
             </div>
             <div className="bg-white/60 rounded-xl p-4 backdrop-blur-sm border border-white/20 mb-6">
               <p className="text-slate-700 font-medium leading-relaxed">{query}</p>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 justify-items-center">
               <div className={`p-6 rounded-xl border-2 shadow-lg ${getScoreColor(results.overallScore)}`}>
                 <div className="text-center">
-                  <div className="text-3xl font-bold mb-2">{results.overallScore}/100</div>
-                  <div className="text-sm font-semibold uppercase tracking-wide">{results.assessment}</div>
+                  <div className="text-3xl font-bold mb-2">{results.overallScore}%</div>
+                  <div className="text-sm font-semibold uppercase tracking-wide">Research Trust Score</div>
+                  <div className="text-xs text-slate-600 mt-2 leading-relaxed">
+                    This score reflects the Judge Agent's verdict, i.e., how much you can trust the final research conclusions.
+                    <br/><br/>
+                    Score Guide - 80%+: Excellent; 70-79%: High Quality; 60-69%: Satisfactory; 50-59% Needs Improvement; &lt;50%: Insufficient
+                  </div>
                 </div>
               </div>
               
               {researchData && (
-                <>
-                  <div className="p-6 rounded-xl bg-gradient-to-br from-primary-50 to-primary-100 border-2 border-primary-200 shadow-lg">
-                    <div className="text-center">
-                      <div className="text-3xl font-bold text-primary-700 mb-2">{researchData.sources.length}</div>
-                      <div className="text-sm font-semibold text-primary-600 uppercase tracking-wide">Sources Analyzed</div>
+                <div className="p-6 rounded-xl bg-gradient-to-br from-secondary-50 to-secondary-100 border-2 border-secondary-200 shadow-lg">
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-secondary-700 mb-2">{researchData.confidenceScore}%</div>
+                    <div className="text-sm font-semibold text-secondary-600 uppercase tracking-wide">Research Confidence Score</div>
+                    <div className="text-xs text-slate-600 mt-2 leading-relaxed">
+                      This score reflects how confident the AI was in its research process and methodology.
+                      <br/><br/>
+                      Score Guide - 90%+: Very High Confidence; 80-89%: High Confidence; 70-79%: Moderate Confidence; 60-69%: Low Confidence; &lt;60%: Very Low Confidence
                     </div>
                   </div>
-                  
-                  <div className="p-6 rounded-xl bg-gradient-to-br from-secondary-50 to-secondary-100 border-2 border-secondary-200 shadow-lg">
-                    <div className="text-center">
-                      <div className="text-3xl font-bold text-secondary-700 mb-2">{researchData.confidenceScore}%</div>
-                      <div className="text-sm font-semibold text-secondary-600 uppercase tracking-wide">Research Confidence</div>
-                    </div>
-                  </div>
-                </>
+                </div>
               )}
             </div>
           </div>
-          
-          <button
-            onClick={onReset}
-            className="btn-secondary flex items-center space-x-2"
-          >
-            <RefreshCw className="w-4 h-4" />
-            <span>New Research</span>
-          </button>
         </div>
       </div>
 
       {/* Tabs */}
       <div className="bg-white/30 backdrop-blur-sm border-b border-white/20">
-        <nav className="flex space-x-8 px-8">
+        <nav className="flex justify-center space-x-8 px-8">
           {[
-            { id: 'overview', label: 'Overview', icon: BarChart3 },
             { id: 'research', label: 'Research Analysis', icon: FileText },
-            { id: 'evaluation', label: 'Evaluation Details', icon: CheckCircle },
-            { id: 'sources', label: 'Sources', icon: ExternalLink },
+            { id: 'sources', label: 'Source Analysis', icon: ExternalLink },
             { id: 'trail', label: 'Research Trail', icon: Globe },
           ].map((tab) => (
             <button
@@ -194,86 +256,43 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, query, 
 
       {/* Tab Content */}
       <div className="p-8 bg-white/20 backdrop-blur-sm">
-        {activeTab === 'overview' && (
-          <div className="space-y-6">
-            {/* Executive Summary */}
-            {researchData?.executiveSummary && (
-              <div>
-                <h3 className="text-lg font-semibold text-slate-900 mb-3">Executive Summary</h3>
-                <div className="bg-slate-50 rounded-lg p-4">
-                  <p className="text-slate-700 leading-relaxed">{researchData.executiveSummary}</p>
-                </div>
-              </div>
-            )}
-
-            {/* Key Recommendation */}
-            <div>
-              <h3 className="text-lg font-semibold text-slate-900 mb-3">Assessment</h3>
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <p className="text-blue-800 font-medium">{results.recommendation}</p>
-              </div>
-            </div>
-
-            {/* Key Findings */}
-            {researchData?.keyFindings && researchData.keyFindings.length > 0 && (
-              <div>
-                <h3 className="text-lg font-semibold text-slate-900 mb-3">Key Findings</h3>
-                <div className="space-y-2">
-                  {researchData.keyFindings.slice(0, 5).map((finding, index) => (
-                    <div key={index} className="flex items-start space-x-3 p-3 bg-slate-50 rounded-lg">
-                      <div className="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-sm font-medium flex-shrink-0">
-                        {index + 1}
-                      </div>
-                      <p className="text-slate-700 text-sm leading-relaxed">{finding}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Strengths and Improvements */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {results.strengths.length > 0 && (
-                <div>
-                  <h3 className="text-lg font-semibold text-green-700 mb-3">Strengths</h3>
-                  <ul className="space-y-2">
-                    {results.strengths.map((strength, index) => (
-                      <li key={index} className="flex items-start space-x-2">
-                        <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
-                        <span className="text-sm text-slate-700">{strength}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {results.improvements.length > 0 && (
-                <div>
-                  <h3 className="text-lg font-semibold text-amber-700 mb-3">Areas for Enhancement</h3>
-                  <ul className="space-y-2">
-                    {results.improvements.map((improvement, index) => (
-                      <li key={index} className="flex items-start space-x-2">
-                        <AlertCircle className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
-                        <span className="text-sm text-slate-700">{improvement}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
         {activeTab === 'research' && researchData && (
           <div className="space-y-6">
+            <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+              <div className="flex items-center space-x-2 mb-2">
+                <div className="w-6 h-6 bg-slate-600 text-white rounded-full flex items-center justify-center text-xs font-bold">
+                  i
+                </div>
+                <h4 className="font-medium text-slate-900">Interactive Research Report</h4>
+              </div>
+              <p className="text-sm text-slate-600">
+                This research analysis includes clickable citation numbers (like <span className="text-blue-600 font-medium">[1]</span>, <span className="text-blue-600 font-medium">[2]</span>, <span className="text-blue-600 font-medium">[3]</span>) 
+                that link directly to the corresponding sources. Click any citation to jump to the Source Analysis tab and view that specific source.
+              </p>
+            </div>
+
+            {/* Trust Assessment */}
+            <div>
+              <h3 className="text-lg font-semibold text-slate-900 mb-3">Trust Assessment</h3>
+              <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+                <div 
+                  className="prose prose-sm max-w-none text-slate-700"
+                  dangerouslySetInnerHTML={{ __html: renderMarkdown(results.recommendation) }}
+                />
+              </div>
+            </div>
+
             {/* Research Methodology */}
             <div>
               <h3 className="text-lg font-semibold text-slate-900 mb-3">Research Methodology</h3>
               <div className="bg-slate-50 rounded-lg p-4">
-                <p className="text-slate-700">{researchData.methodology}</p>
+                <div 
+                  className="prose prose-sm max-w-none text-slate-700"
+                  dangerouslySetInnerHTML={{ __html: renderMarkdown(researchData.methodology) }}
+                />
                 {researchData.metadata && (
                   <div className="mt-3 pt-3 border-t border-slate-200">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
                       <div>
                         <span className="text-slate-500">Model:</span>
                         <div className="font-medium text-slate-700">{researchData.metadata.researchModel}</div>
@@ -286,10 +305,6 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, query, 
                         <span className="text-slate-500">Sources:</span>
                         <div className="font-medium text-slate-700">{researchData.metadata.totalSources}</div>
                       </div>
-                      <div>
-                        <span className="text-slate-500">Avg. Strength:</span>
-                        <div className="font-medium text-slate-700">{Math.round(researchData.metadata.averageSourceCredibility)}%</div>
-                      </div>
                     </div>
                   </div>
                 )}
@@ -300,27 +315,12 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, query, 
             <div>
               <h3 className="text-lg font-semibold text-slate-900 mb-3">Primary Research Analysis</h3>
               <div className="bg-white border border-slate-200 rounded-lg p-4">
-                <div className="prose prose-sm max-w-none text-slate-700">
-                  {researchData.detailedAnalysis.primaryResearch.split('\n\n').map((paragraph, index) => (
-                    <p key={index} className="mb-3 leading-relaxed">{paragraph}</p>
-                  ))}
-                </div>
+                <div 
+                  className="prose prose-sm max-w-none text-slate-700"
+                  dangerouslySetInnerHTML={{ __html: renderMarkdown(researchData.detailedAnalysis.primaryResearch) }}
+                />
               </div>
             </div>
-
-            {/* Follow-up Research */}
-            {researchData.detailedAnalysis.followUpResearch && (
-              <div>
-                <h3 className="text-lg font-semibold text-slate-900 mb-3">Follow-up Analysis</h3>
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <div className="prose prose-sm max-w-none text-slate-700">
-                    {researchData.detailedAnalysis.followUpResearch.split('\n\n').map((paragraph, index) => (
-                      <p key={index} className="mb-3 leading-relaxed">{paragraph}</p>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
 
             {/* Research Limitations */}
             {researchData.limitations && (
@@ -330,7 +330,10 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, query, 
                   {researchData.limitations.map((limitation, index) => (
                     <li key={index} className="flex items-start space-x-2">
                       <AlertCircle className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm text-slate-700">{limitation}</span>
+                      <span 
+                        className="text-sm text-slate-700"
+                        dangerouslySetInnerHTML={{ __html: renderMarkdown(limitation) }}
+                      />
                     </li>
                   ))}
                 </ul>
@@ -339,56 +342,36 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, query, 
           </div>
         )}
 
-        {activeTab === 'evaluation' && (
-          <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold text-slate-900 mb-3">Evaluation Framework</h3>
-              <div className="bg-slate-50 rounded-lg p-4">
-                <p className="text-slate-700 mb-2">
-                  <strong>Judge Persona:</strong> {results.judgePersona}
-                </p>
-                <p className="text-slate-700 mb-2">
-                  <strong>Framework:</strong> {results.evaluationFramework}
-                </p>
-                <p className="text-slate-700">
-                  <strong>Overall Confidence:</strong> {Math.round(results.confidence * 100)}%
-                </p>
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-lg font-semibold text-slate-900 mb-3">Detailed Scoring</h3>
-              <div className="space-y-3">
-                {Object.entries(results.detailedScores || {}).map(([criterion, scoreData]: [string, any]) => (
-                  <div key={criterion} className="bg-white border border-slate-200 rounded-lg p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <h4 className="font-medium text-slate-900">{criterion}</h4>
-                      <span className={`px-3 py-1 rounded-full text-sm font-medium ${getScoreColor(scoreData.score)}`}>
-                        {scoreData.score}/100
-                      </span>
-                    </div>
-                    <p className="text-sm text-slate-600">{scoreData.rationale}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-
         {activeTab === 'sources' && researchData && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-semibold text-slate-900">Research Sources</h3>
               <span className="text-sm text-slate-500">
-                {researchData.sources.length} sources • Avg. strength: {Math.round(researchData.metadata?.averageSourceCredibility || 0)}%
+                {researchData.sources.length} sources analyzed
               </span>
+            </div>
+
+            <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 mb-6">
+              <div className="flex items-center space-x-2 mb-2">
+                <div className="w-6 h-6 bg-slate-600 text-white rounded-full flex items-center justify-center text-xs font-bold">
+                  #
+                </div>
+                <h4 className="font-medium text-slate-900">Source Citation System</h4>
+              </div>
+              <p className="text-sm text-slate-600">
+                Each source is numbered for easy reference. When you see citations like [1], [2], [3] in the research analysis above, 
+                these numbers correspond to the sources listed below. Click on any citation number in the research text to jump directly to that source.
+              </p>
             </div>
 
             <div className="grid gap-4">
               {researchData.sources.map((source) => (
-                <div key={source.id} className="bg-white border border-slate-200 rounded-lg p-4">
+                <div key={source.id} id={`source-${source.id}`} className="bg-white border border-slate-200 rounded-lg p-4 scroll-mt-8">
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex items-center space-x-2">
+                      <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                        {source.id}
+                      </div>
                       <span className="text-lg">{getSourceTypeIcon(source.type)}</span>
                       <h4 className="font-medium text-slate-900 flex-1">{source.title}</h4>
                     </div>
@@ -400,7 +383,10 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, query, 
                   </div>
                   
                   {source.snippet && (
-                    <p className="text-sm text-slate-600 mb-3 leading-relaxed">{source.snippet}</p>
+                    <div 
+                      className="prose prose-sm max-w-none text-slate-600 mb-3 leading-relaxed"
+                      dangerouslySetInnerHTML={{ __html: renderMarkdown(source.snippet) }}
+                    />
                   )}
                   
                   <div className="flex items-center justify-between text-xs text-slate-500">
@@ -436,14 +422,15 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, query, 
               </span>
             </div>
 
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+            <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 mb-6">
               <div className="flex items-center space-x-2 mb-2">
-                <Globe className="w-5 h-5 text-blue-600" />
-                <h4 className="font-medium text-blue-900">Research Journey</h4>
+                <Globe className="w-5 h-5 text-slate-600" />
+                <h4 className="font-medium text-slate-900">Research Journey</h4>
               </div>
-              <p className="text-sm text-blue-700">
-                This shows every website your AI agent visited during research. Each link was crawled, 
-                analyzed, and used to build the comprehensive research report above.
+              <p className="text-sm text-slate-600">
+                This shows every website your AI research agents visited during the comprehensive analysis. 
+                Each source was analyzed for credibility and relevance to build the research report above.
+                The trustworthiness assessment helps you understand how much you can rely on these findings.
               </p>
             </div>
 
@@ -452,7 +439,7 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, query, 
                 <div key={index} className="bg-white border border-slate-200 rounded-lg p-4 hover:shadow-sm transition-shadow">
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex items-center space-x-3 flex-1">
-                      <div className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center text-sm font-medium text-slate-600">
+                      <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
                         {index + 1}
                       </div>
                       <div className="flex-1">
@@ -468,7 +455,7 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, query, 
                     </div>
                     <div className="flex items-center space-x-3">
                       <span className={`px-2 py-1 rounded text-xs font-medium ${getScoreColor(link.credibilityScore)}`}>
-                        {link.credibilityScore}%
+                        {link.credibilityScore}% strength
                       </span>
                       <a
                         href={link.url}
@@ -483,9 +470,10 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, query, 
                   </div>
                   
                   {link.snippet && (
-                    <p className="text-sm text-slate-600 leading-relaxed ml-11">
-                      {link.snippet.substring(0, 200)}...
-                    </p>
+                    <div 
+                      className="prose prose-sm max-w-none text-slate-600 leading-relaxed ml-11"
+                      dangerouslySetInnerHTML={{ __html: renderMarkdown(link.snippet.substring(0, 200)) + '...' }}
+                    />
                   )}
                 </div>
               ))}
@@ -499,6 +487,19 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, query, 
             )}
           </div>
         )}
+      </div>
+
+      {/* New Research Button at Bottom */}
+      <div className="p-8 bg-white/30 backdrop-blur-sm border-t border-white/20">
+        <div className="flex justify-center">
+          <button
+            onClick={onReset}
+            className="btn-secondary flex items-center space-x-2"
+          >
+            <RefreshCw className="w-4 h-4" />
+            <span>New Research</span>
+          </button>
+        </div>
       </div>
     </div>
   );

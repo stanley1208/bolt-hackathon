@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Send, AlertCircle, Sparkles, Beaker, Zap } from 'lucide-react';
+import { Send, AlertCircle, Sparkles, Beaker, Zap, Shield } from 'lucide-react';
 
 interface QueryFormProps {
   onSubmit: (query: string) => void;
@@ -53,8 +53,8 @@ export const QueryForm: React.FC<QueryFormProps> = ({ onSubmit, disabled = false
         <div>
           <h2 className="text-2xl font-bold text-slate-900 gradient-text">Research Query</h2>
           <p className="text-slate-600 font-medium flex items-center space-x-2">
-            <Sparkles className="w-4 h-4 text-primary-500" />
-            <span>Describe your materials science research question</span>
+            <Shield className="w-4 h-4 text-primary-500" />
+            <span>Probe the frontier of materials science & engineering with scrutiny.</span>
           </p>
         </div>
       </div>
@@ -68,12 +68,13 @@ export const QueryForm: React.FC<QueryFormProps> = ({ onSubmit, disabled = false
               onChange={(e) => setQuery(e.target.value)}
               onFocus={() => setIsFocused(true)}
               onBlur={() => setIsFocused(false)}
-              placeholder="Enter your research question or topic for multi-agent analysis... 
+              placeholder="Prompt your investigation with a guiding question:
 
 Examples:
-• 'What are the latest developments in perovskite solar cells?'
-• 'Analyze the mechanical properties of graphene composites'
-• 'Compare biodegradable polymers for medical applications'"
+• What computational methods are most effective in designing high-entropy alloys for aerospace applications?
+• How do van der Waals interactions influence the stacking behavior of 2D materials like MoS₂ and graphene?
+• What are the optimal sintering parameters to minimize grain growth in yttria-stabilized zirconia ceramics?
+• How can copolymer sequence and architecture be tuned to optimize the toughness and biodegradability of PLA-based composites?"
               className={`w-full px-6 py-5 border-2 rounded-2xl resize-none focus:ring-4 focus:ring-primary-500/20 focus:border-primary-500 transition-all duration-300 bg-white/60 backdrop-blur-sm text-slate-800 placeholder-slate-500 font-medium ${
                 error 
                   ? 'border-red-300 focus:border-red-400 focus:ring-red-200/20' 
@@ -81,7 +82,7 @@ Examples:
                     ? 'border-primary-400 shadow-lg shadow-primary-500/20' 
                     : 'border-white/40 hover:border-white/60'
               } ${disabled ? 'bg-slate-50/60 cursor-not-allowed opacity-60' : ''}`}
-              rows={5}
+              rows={6}
               disabled={disabled}
               maxLength={500}
             />
@@ -120,20 +121,20 @@ Examples:
           <div className="text-sm text-slate-600 space-y-3">
             <p className="font-bold text-slate-700 flex items-center space-x-2">
               <Zap className="w-4 h-4 text-primary-500" />
-              <span>Multi-agent research system powered by AI:</span>
+              <span>Meet your materials research team, purpose-built and principled:</span>
             </p>
             <div className="grid grid-cols-1 gap-3">
               <div className="flex items-center space-x-3 p-3 bg-blue-50/80 rounded-xl backdrop-blur-sm border border-blue-200/50">
                 <div className="w-3 h-3 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full pulse-glow"></div>
-                <span><strong>Research Agent</strong> - Deep literature analysis & data mining</span>
+                <span><strong>Researcher Agent</strong><br/>Conducts deep research with a materials science & engineering lens, balancing scope with precision.</span>
               </div>
               <div className="flex items-center space-x-3 p-3 bg-purple-50/80 rounded-xl backdrop-blur-sm border border-purple-200/50">
                 <div className="w-3 h-3 bg-gradient-to-r from-purple-400 to-purple-600 rounded-full pulse-glow"></div>
-                <span><strong>Persona-Crafter</strong> - Expert evaluation framework design</span>
+                <span><strong>Persona Crafter Agent</strong><br/>Constructs frameworks, rooted in domain expertise, for evaluating the strength of the research findings.</span>
               </div>
               <div className="flex items-center space-x-3 p-3 bg-green-50/80 rounded-xl backdrop-blur-sm border border-green-200/50">
                 <div className="w-3 h-3 bg-gradient-to-r from-green-400 to-green-600 rounded-full pulse-glow"></div>
-                <span><strong>Judge Agent</strong> - Comprehensive quality assessment</span>
+                <span><strong>Judge Agent</strong><br/>Reviews the findings, evaluates its trustworthiness, and delivers a reasoned verdict.</span>
               </div>
             </div>
           </div>
@@ -148,7 +149,7 @@ Examples:
             }`}
           >
             <Send className="w-5 h-5" />
-            <span>{disabled ? 'Processing...' : 'Start Research'}</span>
+            <span>{disabled ? 'Researching...' : 'Start Research'}</span>
             {!disabled && query.trim() && !isOverLimit && (
               <Sparkles className="w-4 h-4 animate-pulse" />
             )}

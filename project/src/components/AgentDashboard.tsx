@@ -105,26 +105,6 @@ export const AgentDashboard: React.FC<AgentDashboardProps> = ({ agents }) => {
           </div>
         ))}
       </div>
-      
-      {/* Footer Info */}
-      <div className="text-center">
-        <div className="card-premium p-8 rounded-3xl backdrop-blur-sm border border-white/40 neon-glow">
-          <div className="flex items-center justify-center space-x-6 text-sm text-slate-600">
-            <div className="flex items-center space-x-2">
-              <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-              <span className="font-semibold">Research Agent: Deep literature analysis</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></div>
-              <span className="font-semibold">Persona-Crafter: Framework design</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-              <span className="font-semibold">Judge: Quality assessment</span>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
