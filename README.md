@@ -218,10 +218,6 @@ If you encounter issues:
 - **Styling**: Tailwind CSS with custom animations
 - **Architecture**: Multi-agent system with orchestrated coordination
 
-## 📄 License
-
-This project is part of a hackathon submission. Please check with the repository owner for licensing information.
-
 ---
 
 **Happy Researching!** 🔬✨ 
