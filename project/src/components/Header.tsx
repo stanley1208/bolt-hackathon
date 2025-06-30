@@ -27,7 +27,7 @@ export const Header: React.FC<HeaderProps> = ({ connected }) => {
               )}
             </div>
             <div className="space-y-2">
-              <h1 className="text-5xl font-bold gradient-text mb-2 tracking-tight text-glow">MSERP.ai</h1>
+              <h1 className="text-5xl font-bold gradient-text mb-2 tracking-tight text-glow">Disorderless.ai</h1>
               <p className="text-slate-700 font-semibold text-lg mb-1">Materials Science & Engineering Research Platform</p>
               <p className="text-sm text-slate-500 font-medium flex items-center space-x-2">
                 <Shield className="w-4 h-4 text-primary-500" />

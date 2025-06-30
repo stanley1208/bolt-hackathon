@@ -1,4 +1,4 @@
-# MSERP.ai - Materials Science & Engineering Research Platform
+# Disorderless.ai - Materials Science & Engineering Research Platform
 
 > **First the findings. Then the verdict.**
 
