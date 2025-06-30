@@ -10,12 +10,6 @@ export const config = {
     timeout: 300000, // 5 minutes for deep research
   },
   
-  // Search API Configuration
-  search: {
-    googleApiKey: process.env.GOOGLE_SEARCH_API_KEY || 'your_google_search_api_key',
-    searchEngineId: process.env.GOOGLE_SEARCH_ENGINE_ID || 'your_search_engine_id',
-  },
-  
   // Server Configuration
   server: {
     port: process.env.PORT || 3001,

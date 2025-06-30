@@ -27,7 +27,7 @@ Before you begin, ensure you have the following installed:
 ### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
+git clone <https://github.com/stanley1208/bolt-hackathon/>
 cd bolt-hackathon
 ```
 
@@ -43,26 +43,22 @@ cd project
 npm install
 ```
 
-### 4. Configure API Keys
+### 4. Configure API Key
 
-1. Copy the example configuration file:
-   ```bash
-   cp config.example.js config.js
-   ```
-
-2. Open `config.js` and add your Perplexity AI API key:
+Open `config.js`, add your Perplexity AI API key, and select your deep research model:
    ```javascript
-   export const config = {
-     perplexity: {
-       apiKey: 'your-perplexity-api-key-here',
-       baseUrl: 'https://api.perplexity.ai',
-       deepResearchModel: 'llama-3.1-sonar-large-128k-online',
-       timeout: 120000
-     },
-     server: {
-       port: 3001
-     }
-   };
+   // Perplexity Deep Research API Configuration (Required for Researcher Agent)
+      perplexity: {
+         apiKey: process.env.PERPLEXITY_API_KEY || 'your_perplexity_api_key',
+         baseUrl: 'https://api.perplexity.ai',
+         // Model Options (uncomment one):
+         deepResearchModel: 'llama-3.1-sonar-large-128k-online', // Current: Best balance
+         // deepResearchModel: 'llama-3.1-sonar-small-128k-online', // Budget: Faster & cheaper
+         // deepResearchModel: 'sonar-pro', // Premium: Highest quality (if available)
+         timeout: 300000, // 5 minutes for deep research
+      },
+   ... 
+   }; 
    ```
 
 ### 5. Get Perplexity AI API Key
@@ -128,8 +124,7 @@ project/
 │   ├── database/          # Data management
 │   │   └── manager.js            # In-memory data storage
 │   └── index.js           # Server entry point
-├── config.js              # Configuration file (create from example)
-├── config.example.js      # Example configuration
+├── config.js              # Configuration file
 ├── package.json           # Dependencies and scripts
 └── README.md              # This file
 ```

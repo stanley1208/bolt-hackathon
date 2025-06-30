@@ -5,7 +5,7 @@ import { Server } from 'socket.io';
 import cors from 'cors';
 import { AgentOrchestrator } from './agents/orchestrator.js';
 import { DatabaseManager } from './database/manager.js';
-import { config } from '../config.example.js';
+import { config } from '../config.js';
 
 // Debug environment variables
 console.log('Environment Debug:');

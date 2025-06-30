@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { config } from '../../config.example.js';
+import { config } from '../../config.js';
 
 export class ResearcherAgent {
   constructor(orchestrator) {
@@ -134,7 +134,6 @@ To write the report, please:
    - Bold or italic text for emphasis on critical concepts
    - Code blocks when technical information is present
  2. Use the following exact structure for the report:
-
 ## Restatement of the Query and Research Methodology
 [Insert brief statement of (1) your understanding of the query within the context of the materials science paradigm and (2) your research methodology in view of the same]
 
@@ -226,154 +225,154 @@ IMPORTANT: You will have access to multiple sources - please use AS MANY OF THEM
     }
   }
   // Follow-up research agent
-  async performFollowUpResearch(sessionId, originalQuery, initialResearch) {
-    // Extract key topics from initial research for follow-up
-    const followUpQuery = `Based on the research about "${originalQuery}", 
-    provide additional detailed analysis on the most important aspects, 
-    recent developments, and any contradictory viewpoints. 
-    Focus on filling gaps and adding depth to: ${this.extractKeyTopics(initialResearch.content)}`;
+  // async performFollowUpResearch(sessionId, originalQuery, initialResearch) {
+  //   // Extract key topics from initial research for follow-up
+  //   const followUpQuery = `Based on the research about "${originalQuery}", 
+  //   provide additional detailed analysis on the most important aspects, 
+  //   recent developments, and any contradictory viewpoints. 
+  //   Focus on filling gaps and adding depth to: ${this.extractKeyTopics(initialResearch.content)}`;
 
-    try {
-      const response = await this.perplexityAPI.post('/chat/completions', {
-        model: config.perplexity.deepResearchModel,
-        messages: [
-          {
-            role: 'system',
-            content: 'You are conducting follow-up materials science research to add depth and nuance to initial findings. Focus on recent developments, experimental results, technological applications, and detailed analysis. Use the materials science tetrahedron framework (Structure-Properties-Processing-Performance) to guide your analysis and identify important relationships. Provide your response using proper markdown formatting with clear headers and structured sections.'
-          },
-          {
-            role: 'user',
-            content: followUpQuery
-          }
-        ],
-        temperature: 0.3,
-        max_tokens: 3000,
-        return_citations: true
-      });
+  //   try {
+  //     const response = await this.perplexityAPI.post('/chat/completions', {
+  //       model: config.perplexity.deepResearchModel,
+  //       messages: [
+  //         {
+  //           role: 'system',
+  //           content: 'You are conducting follow-up materials science research to add depth and nuance to initial findings. Focus on recent developments, experimental results, technological applications, and detailed analysis. Use the materials science tetrahedron framework (Structure-Properties-Processing-Performance) to guide your analysis and identify important relationships. Provide your response using proper markdown formatting with clear headers and structured sections.'
+  //         },
+  //         {
+  //           role: 'user',
+  //           content: followUpQuery
+  //         }
+  //       ],
+  //       temperature: 0.3,
+  //       max_tokens: 3000,
+  //       return_citations: true
+  //     });
 
-      return {
-        content: this.cleanMarkdown(response.data.choices[0].message.content),
-        citations: response.data.citations || [],
-        timestamp: new Date().toISOString(),
-        type: 'follow_up'
-      };
+  //     return {
+  //       content: this.cleanMarkdown(response.data.choices[0].message.content),
+  //       citations: response.data.citations || [],
+  //       timestamp: new Date().toISOString(),
+  //       type: 'follow_up'
+  //     };
 
-    } catch (error) {
-      console.warn('Follow-up research failed, continuing with initial research only:', error.message);
-      return null;
-    }
-  }
+  //   } catch (error) {
+  //     console.warn('Follow-up research failed, continuing with initial research only:', error.message);
+  //     return null;
+  //   }
+  // }
 
-  async verifyAndAssessSources(sessionId, primaryResearch, followUpResearch) {
-    // Combine citations from both research phases
-    const allCitations = [
-      ...primaryResearch.citations,
-      ...(followUpResearch?.citations || [])
-    ];
+  // async verifyAndAssessSources(sessionId, primaryResearch, followUpResearch) {
+  //   // Combine citations from both research phases
+  //   const allCitations = [
+  //     ...primaryResearch.citations,
+  //     ...(followUpResearch?.citations || [])
+  //   ];
 
-    // Convert citations to structured source objects
-    const sources = allCitations.map((citation, index) => {
-      // Handle both string URLs and object citations
-      const url = typeof citation === 'string' ? citation : citation.url;
-      const title = typeof citation === 'object' && citation.title ? 
-        citation.title : 
-        this.generateTitleFromUrl(url);
-      const snippet = typeof citation === 'object' && citation.snippet ? 
-        citation.snippet : 
-        `Source content from ${this.getDomainFromUrl(url)}`;
+  //   // Convert citations to structured source objects
+  //   const sources = allCitations.map((citation, index) => {
+  //     // Handle both string URLs and object citations
+  //     const url = typeof citation === 'string' ? citation : citation.url;
+  //     const title = typeof citation === 'object' && citation.title ? 
+  //       citation.title : 
+  //       this.generateTitleFromUrl(url);
+  //     const snippet = typeof citation === 'object' && citation.snippet ? 
+  //       citation.snippet : 
+  //       `Source content from ${this.getDomainFromUrl(url)}`;
 
-      return {
-        id: index + 1,
-        title: title,
-        url: url,
-        snippet: snippet,
-        credibilityScore: this.assessSourceCredibility({ url, title }),
-        type: this.categorizeSource({ url }),
-        accessDate: new Date().toISOString()
-      };
-    });
+  //     return {
+  //       id: index + 1,
+  //       title: title,
+  //       url: url,
+  //       snippet: snippet,
+  //       credibilityScore: this.assessSourceCredibility({ url, title }),
+  //       type: this.categorizeSource({ url }),
+  //       accessDate: new Date().toISOString()
+  //     };
+  //   });
 
-    console.log(`[DEBUG] Converted ${allCitations.length} citations to ${sources.length} structured sources`);
-    console.log(`[DEBUG] Sample source:`, sources[0]);
+  //   console.log(`[DEBUG] Converted ${allCitations.length} citations to ${sources.length} structured sources`);
+  //   console.log(`[DEBUG] Sample source:`, sources[0]);
 
-    return {
-      primaryResearch,
-      followUpResearch,
-      sources,
-      totalSources: sources.length,
-      averageCredibility: sources.reduce((sum, s) => sum + s.credibilityScore, 0) / sources.length
-    };
-  }
+  //   return {
+  //     primaryResearch,
+  //     followUpResearch,
+  //     sources,
+  //     totalSources: sources.length,
+  //     averageCredibility: sources.reduce((sum, s) => sum + s.credibilityScore, 0) / sources.length
+  //   };
+  // }
 
-  generateTitleFromUrl(url) {
-    try {
-      const domain = new URL(url).hostname.replace('www.', '');
+  // generateTitleFromUrl(url) {
+  //   try {
+  //     const domain = new URL(url).hostname.replace('www.', '');
       
-      // Extract meaningful part from path
-      const path = new URL(url).pathname;
-      const pathParts = path.split('/').filter(part => part && part.length > 2);
+  //     // Extract meaningful part from path
+  //     const path = new URL(url).pathname;
+  //     const pathParts = path.split('/').filter(part => part && part.length > 2);
       
-      if (pathParts.length > 0) {
-        const titlePart = pathParts[pathParts.length - 1]
-          .replace(/-/g, ' ')
-          .replace(/_/g, ' ')
-          .split(' ')
-          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-          .join(' ');
-        return `${titlePart} - ${domain}`;
-      }
+  //     if (pathParts.length > 0) {
+  //       const titlePart = pathParts[pathParts.length - 1]
+  //         .replace(/-/g, ' ')
+  //         .replace(/_/g, ' ')
+  //         .split(' ')
+  //         .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+  //         .join(' ');
+  //       return `${titlePart} - ${domain}`;
+  //     }
       
-      return `Research Source - ${domain}`;
-    } catch {
-      return 'Research Source';
-    }
-  }
+  //     return `Research Source - ${domain}`;
+  //   } catch {
+  //     return 'Research Source';
+  //   }
+  // }
 
-  getDomainFromUrl(url) {
-    try {
-      return new URL(url).hostname.replace('www.', '');
-    } catch {
-      return 'Unknown Domain';
-    }
-  }
+  // getDomainFromUrl(url) {
+  //   try {
+  //     return new URL(url).hostname.replace('www.', '');
+  //   } catch {
+  //     return 'Unknown Domain';
+  //   }
+  // }
 
-  async synthesizeFindings(sessionId, query, verifiedFindings) {
-    const { primaryResearch, followUpResearch, sources } = verifiedFindings;
+  // async synthesizeFindings(sessionId, query, verifiedFindings) {
+  //   const { primaryResearch, followUpResearch, sources } = verifiedFindings;
 
-    // Extract key findings and themes
-    const keyFindings = this.extractKeyFindings(primaryResearch.content, followUpResearch?.content);
-    const topics = this.extractTopics(query, primaryResearch.content);
+  //   // Extract key findings and themes
+  //   const keyFindings = this.extractKeyFindings(primaryResearch.content, followUpResearch?.content);
+  //   const topics = this.extractTopics(query, primaryResearch.content);
 
-    // Calculate overall confidence based on source quality and consistency
-    const confidenceScore = this.calculateConfidenceScore(sources, keyFindings);
+  //   // Calculate overall confidence based on source quality and consistency
+  //   const confidenceScore = this.calculateConfidenceScore(sources, keyFindings);
     
-    return {
-      query,
-      executiveSummary: this.generateExecutiveSummary(primaryResearch.content),
-      keyFindings,
-      detailedAnalysis: {
-        primaryResearch: primaryResearch.content,
-        followUpResearch: followUpResearch?.content || null
-      },
-      sources,
-      topics,
-      methodology: 'AI-powered deep research using Perplexity with multi-phase analysis and source verification',
-      confidenceScore,
-      limitations: [
-        'Analysis based on publicly available information',
-        'Information current as of research date',
-        'AI-generated synthesis may have interpretation limitations',
-        'Source availability and accessibility may affect completeness'
-      ],
-      metadata: {
-        researchDuration: 'Multi-phase deep research',
-        totalSources: sources.length,
-        averageSourceCredibility: verifiedFindings.averageCredibility,
-        researchModel: config.perplexity.deepResearchModel,
-        timestamp: new Date().toISOString()
-      }
-    };
-  }
+  //   return {
+  //     query,
+  //     executiveSummary: this.generateExecutiveSummary(primaryResearch.content),
+  //     keyFindings,
+  //     detailedAnalysis: {
+  //       primaryResearch: primaryResearch.content,
+  //       followUpResearch: followUpResearch?.content || null
+  //     },
+  //     sources,
+  //     topics,
+  //     methodology: 'AI-powered deep research using Perplexity with multi-phase analysis and source verification',
+  //     confidenceScore,
+  //     limitations: [
+  //       'Analysis based on publicly available information',
+  //       'Information current as of research date',
+  //       'AI-generated synthesis may have interpretation limitations',
+  //       'Source availability and accessibility may affect completeness'
+  //     ],
+  //     metadata: {
+  //       researchDuration: 'Multi-phase deep research',
+  //       totalSources: sources.length,
+  //       averageSourceCredibility: verifiedFindings.averageCredibility,
+  //       researchModel: config.perplexity.deepResearchModel,
+  //       timestamp: new Date().toISOString()
+  //     }
+  //   };
+  // }
 
   extractKeyTopics(content) {
     // Simple extraction of key topics from content
@@ -464,53 +463,118 @@ IMPORTANT: You will have access to multiple sources - please use AS MANY OF THEM
     
     let score = 70; // Base score
     
-    // Enhanced scoring for materials science sources
-    const academicDomains = ['.edu', '.ac.uk', '.ac.jp', '.ac.za','.edu.cn','.edu.hk','.edu.mo','.edu.tw','.ac.uk',''];
-    const governmentDomains = ['.gov', '.gov.uk', '.gc.ca'];
+    // Domain arrays - preserved your curated lists
+    const academicDomains = ['.edu', '.ac.uk', '.ac.jp', '.ac.za', '.edu.cn', '.edu.hk', '.edu.in', '.edu.au', '.edu.it', 
+        '.edu.es', '.nl', '.se', '.dk', '.edu.sg', '.ac.il', '.be', '.edu.tw'];
+    const governmentDomains = ['.gov.cn', '.gov.hk', '.eu', '.gov.mo', '.gov', '.de', '.gov.uk', '.go.jp', '.gouv.fr', '.go.kr', '.gc.ca', '.gov.in', 
+        '.admin.ch', '.gov.au', '.gov.it', '.gob.es', '.gov.se', '.gov.sg', '.gov.il', '.gov.be', '.gov.tw'];
     const materialsScienceSources = [
-      'nature.com', 'science.org', 'sciencedirect.com', 'acta-materialia.org', 'cell.com', 'pubs.rsc.org', 
-      'pubs.acs.org', 'link.springer.com', 'tms.org', 'asminternational.org', 'advanced.onlinelibrary.wiley.com', 'onlinelibrary.wiley.com'
+        'nature.com', 'science.org', 'sciencedirect.com', 'acta-materialia.org', 'cell.com', 'pubs.rsc.org', 
+        'pubs.acs.org', 'link.springer.com', 'tms.org', 'asminternational.org', 'advanced.onlinelibrary.wiley.com', 'onlinelibrary.wiley.com'
     ];
+    const reputableSources = ['bbc.com', 'reuters.com', 'ap.org', 'npr.org', 'phys.org', 'rsc.org', 'acs.org', 'mrs.org'];
     
-    // Academic sources
-    if (academicDomains.some(domain => url.includes(domain))) score += 25;
-    // Government sources  
-    else if (governmentDomains.some(domain => url.includes(domain))) score += 20;
-    // Materials science specific sources
-    else if (materialsScienceSources.some(source => url.includes(source))) score += 30;
-    // General reputable sources
-    else if (url.includes('.org') || url.includes('.edu') || url.includes('.gov')) score += 15;
-    else if (url.includes('wikipedia.org')) score += 5;
+    // Penalty arrays
+    const blogSources = ['blog', 'blogger.com', 'medium.com', 'wordpress.com'];
+    const forumSources = ['forum', 'reddit.com', 'quora.com', 'stackexchange.com'];
+    const socialMedia = ['youtube.com', 'facebook.com', 'twitter.com', 'instagram.com'];
     
-    // Reputable news sources
-    const reputableSources = ['bbc.com', 'reuters.com', 'ap.org', 'npr.org', 
-    'phys.org', 'rsc.org', 'acs.org', 'mrs.org', 'nature.com', 'tms.org', 'cell.com', 'asminternational.org'];
-    if (reputableSources.some(source => url.includes(source))) score += 15;
+    // Additive scoring system - sources can accumulate multiple bonuses
     
-    // Penalties
-    if (url.includes('blog') || url.includes('forum') || url.includes('reddit.com')) score -= 15;
-    if (url.includes('youtube.com') || url.includes('facebook.com')) score -= 20;
+    // Primary source type bonuses
+    if (academicDomains.some(domain => url.includes(domain))) {
+        score += 30;
+    }
+    
+    if (governmentDomains.some(domain => url.includes(domain))) {
+        score += 20;
+    }
+    
+    // Domain-specific expertise bonus (can stack with academic/gov)
+    if (materialsScienceSources.some(source => url.includes(source))) {
+        score += 35;
+    }
+    
+    // Reputable news sources bonus
+    if (reputableSources.some(source => url.includes(source))) {
+        score += 15;
+    }
+    
+    // General organization bonus (only if not already scored above)
+    if (url.includes('.org') && !this.hasReceivedPrimaryBonus(url, academicDomains, governmentDomains, materialsScienceSources, reputableSources)) {
+        score += 15;
+    }
+    
+    // Wikipedia special case
+    if (url.includes('wikipedia.org')) {
+        score += 10; // Increased from 5 - useful starting point
+    }
+    
+    // Penalty system
+    if (blogSources.some(source => url.includes(source))) {
+        score -= 15;
+    }
+    
+    if (forumSources.some(source => url.includes(source))) {
+        score -= 20;
+    }
+    
+    if (socialMedia.some(platform => url.includes(platform))) {
+        score -= 25;
+    }
     
     return Math.max(50, Math.min(100, score));
-  }
+}
 
-  categorizeSource(citation) {
+// Helper method to check if URL already received primary bonuses
+hasReceivedPrimaryBonus(url, academicDomains, governmentDomains, materialsScienceSources, reputableSources) {
+    return academicDomains.some(domain => url.includes(domain)) ||
+           governmentDomains.some(domain => url.includes(domain)) ||
+           materialsScienceSources.some(source => url.includes(source)) ||
+           reputableSources.some(source => url.includes(source));
+}
+
+// Categorization of sources
+categorizeSource(citation) {
     const url = citation.url || '';
     
-    if (url.includes('.edu')) return 'academic';
-    if (url.includes('.gov')) return 'government';
-    if (url.includes('.org')) return 'organization';
-    if (url.includes('news') || url.includes('com')) return 'news_media';
-    return 'web_source';
-  }
-
-  calculateConfidenceScore(sources, keyFindings) {
-    const sourceScore = sources.reduce((sum, s) => sum + s.credibilityScore, 0) / sources.length;
-    const findingsScore = Math.min(100, keyFindings.length * 10 + 60);
-    const sourceCountScore = Math.min(20, sources.length * 2);
+    const academicDomains = ['.edu', '.ac.uk', '.ac.jp', '.ac.za', '.edu.cn', '.edu.hk', '.edu.in', '.edu.au'];
+    const governmentDomains = ['.gov', '.gov.cn', '.gov.hk', '.eu', '.gov.uk', '.go.jp', '.gouv.fr', '.go.kr', '.gc.ca'];
+    const materialsScienceSources = ['nature.com', 'science.org', 'sciencedirect.com', 'acta-materialia.org', 'tms.org', 'asminternational.org'];
     
-    return Math.round((sourceScore * 0.5) + (findingsScore * 0.3) + (sourceCountScore * 0.2));
-  }
+    // Hierarchical categorization
+    if (academicDomains.some(domain => url.includes(domain))) return 'academic';
+    if (governmentDomains.some(domain => url.includes(domain))) return 'government';
+    if (materialsScienceSources.some(source => url.includes(source))) return 'scientific_journal';
+    if (url.includes('.org')) return 'organization';
+    if (['bbc.com', 'reuters.com', 'ap.org', 'npr.org'].some(source => url.includes(source))) return 'news_media';
+    if (url.includes('.com') || url.includes('.net')) return 'commercial';
+    
+    return 'web_source';
+}
+
+// Confidence calculation with source diversity consideration
+calculateConfidenceScore(sources, keyFindings) {
+    if (!sources.length) return 0;
+    
+    // Source quality score
+    const sourceScore = sources.reduce((sum, s) => sum + (s.credibilityScore || 50), 0) / sources.length;
+    
+    // Source diversity bonus
+    const sourceTypes = new Set(sources.map(s => this.categorizeSource(s)));
+    const diversityBonus = Math.min(15, sourceTypes.size * 3);
+    
+    // Findings score with diminishing returns
+    const findingsScore = Math.min(100, keyFindings.length * 8 + 60);
+    
+    // Source count score with diminishing returns
+    const sourceCountScore = Math.min(25, Math.sqrt(sources.length) * 5);
+    
+    // Weighted calculation
+    const baseScore = (sourceScore * 0.4) + (findingsScore * 0.3) + (sourceCountScore * 0.2) + (diversityBonus * 0.1);
+    
+    return Math.round(Math.min(100, baseScore));
+}
 
   generateExecutiveSummary(content) {
     // Extract first substantial paragraph as executive summary
