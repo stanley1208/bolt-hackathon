@@ -1,4 +1,5 @@
 import { Brain, Activity, Zap, Sparkles, Shield, CheckCircle } from 'lucide-react';
+import boltBadge from '../assets/bolt-badge.png';
 
 interface HeaderProps {
   connected: boolean;
@@ -33,6 +34,25 @@ export const Header: React.FC<HeaderProps> = ({ connected }) => {
                 <span>First the findings. Then the verdict.</span>
               </p>
             </div>
+          </div>
+          
+          {/* Powered by Bolt Badge */}
+          <div className="flex items-center">
+            <a 
+              href="https://bolt.new/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="relative group cursor-pointer"
+              title="Powered by Bolt - Visit bolt.new"
+            >
+              <div className="w-24 h-24 rounded-full overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+                <img 
+                  src={boltBadge} 
+                  alt="Powered by Bolt" 
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </a>
           </div>
         </div>
       </div>
